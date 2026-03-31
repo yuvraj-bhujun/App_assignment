@@ -1,0 +1,275 @@
+/* Profile Content Styles */
+
+.profile-section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.profile-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.profile-top img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #0b6b5c;
+}
+.profile-top h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #222;
+}
+.profile-top p {
+  margin: 4px 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #444;
+  font-weight: 500;
+}
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d7d7d7;
+  background: #fafafa;
+  font-size: 14px;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+input:focus {
+  outline: none;
+  border-color: #0b6b5c;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(11, 107, 92, 0.06);
+}
+input:disabled {
+  background: #eee;
+  cursor: not-allowed;
+}
+
+.password-field {
+  position: relative;
+}
+.password-field input {
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: calc(50% + 10px);
+  transform: translateY(-50%);
+  width: 20px;
+  height: 15px;
+  cursor: pointer;
+  fill: #000000;
+  transition: fill 0.15s, transform 0.12s;
+  display: inline-block;
+  pointer-events: all;
+}
+.toggle-password:hover {
+  fill: #000000;
+  transform: translateY(-50%) scale(1.06);
+}
+
+.btn-container {
+  text-align: right;
+  margin-top: 22px;
+}
+.btn {
+  background: #0b6b5c;
+  color: #fff;
+  border: 0;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+
+  /* Smooth transitions */
+  transition: background 0.3s ease,
+              transform 0.3s ease,
+              box-shadow 0.3s ease,
+              filter 0.3s ease;
+
+  box-shadow: 0 2px 4px rgba(11, 107, 92, 0.25);
+  position: relative;
+  overflow: hidden; /* needed for gradient effect */
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+
+  background: radial-gradient(circle, rgba(255,255,255,0.35) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: width 0.4s ease, height 0.4s ease, opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.btn:hover {
+  background: #0a5f52;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 6px 14px rgba(11, 107, 92, 0.35);
+  filter: brightness(1.05);
+}
+
+.btn:hover::after {
+  width: 180%;
+  height: 180%;
+  opacity: 1;
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(11, 107, 92, 0.2);
+}
+.btn.secondary {
+  background: #f0f0f0;
+  color: #333;
+  margin-right: 10px;
+}
+.btn.hidden {
+  display: none;
+}
+
+@media (max-width: 880px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CURRENT PASSWORD POPUP */
+.cpwd-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+}
+
+.cpwd-modal-card {
+    background: white;
+    padding: 25px;
+    width: 330px;
+    border-radius: 12px;
+    text-align: center;
+    animation: slideUp 0.25s ease;
+}
+
+.cpwd-modal-card input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.cpwd-btn-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.hidden { display: none !important; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+#pwdMismatchModal h3 {
+    margin-bottom: 20px;
+}
+
+/* ===== Password mismatch popup ===== */
+#password-mismatch-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none; /* hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.password-mismatch-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    width: 320px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Change Password Button */
+.change-pwd-btn {
+  padding: 10px 20px;
+  background: #0b6b5c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(11, 107, 92, 0.2);
+  width: 100%;
+  margin-top: 24px;
+}
+
+.change-pwd-btn:hover {
+  background: #09584b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(11, 107, 92, 0.3);
+}
+
+.change-pwd-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(11, 107, 92, 0.2);
+}
+
+/* Make password fields stack vertically in same column */
+#newPwdDiv {
+  grid-column: 2;
+}
+
+#confirmPwdDiv {
+  grid-column: 2;
+  margin-top: -12px;
+}

@@ -1,0 +1,200 @@
+{% extends "base_homepage.html" %} 
+{% load static %} 
+
+{% block title %}GrandBlue — Terms & Conditions{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/T&C.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <div class="wrap">
+    <div class="hed">
+      <div class="brand">
+        <div class="headerlogo">GB</div>
+        <div>
+          <h1>GrandBlue — Terms &amp; Conditions</h1>
+          <div class="meta">Operated in Mauritius • Effective: <span id="effectiveDate">2025-11-28</span></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" onclick="window.print()">Print</button>
+        <button class="btn primary" id="acceptBtn" onclick="acceptTerms()">Accept</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <nav class="sidebar" aria-label="Table of contents">
+        <h2>Table of contents</h2>
+        <input type="search" id="search" placeholder="Search the terms..." aria-label="Search terms">
+        <div class="toc" id="toc">
+          <a href="#intro">1. Introduction</a>
+          <a href="#definitions">2. Definitions</a>
+          <a href="#eligibility">3. Eligibility</a>
+          <a href="#use">4. Use of the Platform</a>
+          <a href="#booking">5. Booking Policy</a>
+          <a href="#payment">6. Payment Terms</a>
+          <a href="#safety">7. Safety and Liability</a>
+          <a href="#reviews">8. User Reviews</a>
+          <a href="#privacy">9. Privacy</a>
+          <a href="#prohibited">10. Prohibited Activities</a>
+          <a href="#ip">11. Intellectual Property</a>
+          <a href="#law">12. Governing Law</a>
+          <a href="#amendments">13. Amendments</a>
+          <a href="#contact">14. Contact</a>
+        </div>
+      </nav>
+
+      <main class="card" id="content" tabindex="0">
+        <section id="intro">
+          <h2 class="section">1. Introduction</h2>
+          <p>These Terms and Conditions ("Terms") govern your use of the GrandBlue online booking platform ("Platform"), operated in Mauritius. By accessing, browsing, or making a booking through this Platform, you agree to be bound by these Terms. If you do not agree, you must discontinue use of the Platform immediately.</p>
+        </section>
+
+        <section id="definitions">
+          <h2 class="section">2. Definitions</h2>
+          <p><strong>"Company"</strong> refers to GrandBlue, located in Mauritius.<br>
+          <strong>"Platform"</strong> refers to the GrandBlue website used for browsing, booking, and managing seawater activities.<br>
+          <strong>"User"</strong> refers to any individual accessing the Platform, including Visitors, Registered Customers, and Administrators.<br>
+          <strong>"Customer"</strong> refers to a registered user aged 18 or above who makes bookings through the Platform.<br>
+          <strong>"Activities"</strong> refers to seawater or marine leisure activities offered through the Platform.</p>
+        </section>
+
+        <section id="eligibility">
+          <h2 class="section">3. Eligibility</h2>
+          <ul>
+            <li>Be at least 18 years old.</li>
+            <li>Provide accurate, complete, and current information.</li>
+            <li>Use the Platform in compliance with all applicable laws of Mauritius.</li>
+          </ul>
+        </section>
+
+        <section id="use">
+          <h2 class="section">4. Use of the Platform</h2>
+
+          <h3 class="small">4.1 Visitors</h3>
+          <p>Visitors may browse activities, search for offerings, and read reviews but must register to place bookings.</p>
+
+          <h3 class="small">4.2 Customers</h3>
+          <ul>
+            <li>Book activities.</li>
+            <li>Choose dates and group sizes.</li>
+            <li>Make payments by credit or debit card.</li>
+            <li>Manage profile information.</li>
+            <li>Cancel bookings with instant refunds.</li>
+            <li>View booking history.</li>
+            <li>Submit reviews.</li>
+          </ul>
+          <p>Customers agree not to misuse the Platform, attempt unauthorized access, or submit fraudulent information.</p>
+
+          <h3 class="small">4.3 Administrators</h3>
+          <p>Administrators may manage activities, bookings, customer notifications, payments tracking, and reviews. Administrators are required to handle all data responsibly and lawfully.</p>
+        </section>
+
+        <section id="booking">
+          <h2 class="section">5. Booking Policy</h2>
+
+          <h3 class="small">5.1 Booking Confirmation</h3>
+          <ul>
+            <li>The Customer selects an activity, date, and group size.</li>
+            <li>Full payment is successfully processed.</li>
+            <li>A confirmation notice is issued via the Platform.</li>
+          </ul>
+
+          <h3 class="small">5.2 Customer Cancellations</h3>
+          <p>Customers may cancel a confirmed booking at any time prior to the activity. Upon cancellation:</p>
+          <ul>
+            <li>An instant refund will be issued.</li>
+            <li>Refunds are issued in full with no penalties.</li>
+          </ul>
+
+          <h3 class="small">5.3 Cancellations by GrandBlue</h3>
+          <p>The Company reserves the right to cancel bookings due to safety, weather conditions, operational issues, or unavailability. In such cases:</p>
+          <ul>
+            <li>Customers will be notified promptly.</li>
+            <li>A full refund will be issued.</li>
+          </ul>
+        </section>
+
+        <section id="payment">
+          <h2 class="section">6. Payment Terms</h2>
+          <ul>
+            <li>Payments are accepted <strong>only via credit or debit card</strong>.</li>
+            <li>The Platform does not store full card information; transactions are processed via secure third-party payment gateways.</li>
+            <li>All bookings must be paid in full at the time of reservation.</li>
+          </ul>
+        </section>
+
+        <section id="safety">
+          <h2 class="section">7. Safety and Liability</h2>
+          <p>Participation in seawater activities involves inherent risks. By booking or participating in any activity:</p>
+          <ul>
+            <li>You acknowledge and accept these risks.</li>
+            <li>GrandBlue is <strong>not liable</strong> for any injuries, accidents, or losses, including loss of personal items, occurring during or arising from any activity.</li>
+            <li>Customers are responsible for following all safety instructions provided by activity operators.</li>
+          </ul>
+          <p>GrandBlue does not guarantee availability, uninterrupted operation, or error-free functionality of the Platform.</p>
+        </section>
+
+        <section id="reviews">
+          <h2 class="section">8. User Reviews</h2>
+          <p>Customers may submit reviews about their experience. By posting a review, you agree that:</p>
+          <ul>
+            <li>The content is truthful and respectful.</li>
+            <li>You will not submit defamatory, offensive, or misleading information.</li>
+            <li>GrandBlue reserves the right to remove or moderate reviews at its discretion.</li>
+          </ul>
+        </section>
+
+        <section id="privacy">
+          <h2 class="section">9. Privacy</h2>
+          <p>GrandBlue collects and processes limited personal data necessary for:</p>
+          <ul>
+            <li>Managing bookings</li>
+            <li>Processing payments</li>
+            <li>Providing customer support</li>
+            <li>Enhancing service quality</li>
+          </ul>
+          <p>Personal information is handled responsibly and will not be shared with third parties except as required for payment processing or by law. For further details, users may refer to the Platform’s Privacy Policy (if available).</p>
+        </section>
+
+        <section id="prohibited">
+          <h2 class="section">10. Prohibited Activities</h2>
+          <ul>
+            <li>Engage in fraudulent bookings.</li>
+            <li>Interfere with Platform functionality.</li>
+            <li>Attempt to bypass security measures.</li>
+            <li>Use the Platform for unlawful purposes.</li>
+          </ul>
+          <p>Violations may result in account suspension or legal action.</p>
+        </section>
+
+        <section id="ip">
+          <h2 class="section">11. Intellectual Property</h2>
+          <p>All content on the Platform, including text, images, logos, and software, is the property of GrandBlue and may not be copied, reproduced, or distributed without prior written permission.</p>
+        </section>
+
+        <section id="law">
+          <h2 class="section">12. Governing Law</h2>
+          <p>These Terms are governed by and interpreted in accordance with the <strong>laws of Mauritius</strong>. Any disputes shall be resolved within the jurisdiction of Mauritian courts.</p>
+        </section>
+
+        <section id="amendments">
+          <h2 class="section">13. Amendments</h2>
+          <p>GrandBlue reserves the right to modify these Terms at any time. Continued use of the Platform constitutes acceptance of updated Terms.</p>
+        </section>
+
+        <section id="contact">
+          <h2 class="section">14. Contact Information</h2>
+          <p>For inquiries or support regarding these Terms, please contact GrandBlue administration.</p>
+        </section>
+
+        <p style="color: #8f8f8f;">By using the GrandBlue Booking Platform, you acknowledge that you have read, understood, and agreed to these Terms and Conditions.</p>
+      </main>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/T&C.js' %}"></script>
+{% endblock %}

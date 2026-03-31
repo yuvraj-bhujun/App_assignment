@@ -1,0 +1,394 @@
+{% extends "base_homepage.html" %} 
+{% load static %} 
+{% block title %}
+{{activity.name }}
+{% endblock %} 
+{% block extrahead %}
+<link
+  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<link rel="stylesheet" href="{% static 'css/activity_booking.css' %}" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+{% endblock %} 
+
+{% block content %}
+<!-- ======================== MAIN CONTENT ======================== -->
+<div class="container1">
+  <!-- Image Gallery -->
+  <div class="image-gallery">
+    <div class="main-image">
+      <img src="{{ images.0.image.url }}" alt="{{ activity.name }}" />
+    </div>
+    <div class="secondary-images">
+      {% for image in images|slice:"1:3" %}
+      <img src="{{ image.image.url }}" alt="{{ activity.name }}" />
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Content + Booking Card -->
+  <div class="content-layout">
+    <!-- Left: Activity Details -->
+    <div class="activity-details">
+      <div class="activity-header">
+        <h1 class="activity-title">{{ activity.name }}</h1>
+        <div class="activity-meta">
+          <div class="rating">
+            <span class="star-rating">
+              <i class="{% if average_rating >= 1 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 1 %} empty-star{% endif %}"></i>
+              <i class="{% if average_rating >= 2 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 2 %} empty-star{% endif %}"></i>
+              <i class="{% if average_rating >= 3 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 3 %} empty-star{% endif %}"></i>
+              <i class="{% if average_rating >= 4 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 4 %} empty-star{% endif %}"></i>
+              <i class="{% if average_rating >= 5 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 5 %} empty-star{% endif %}"></i>
+            </span>
+            <span>{{ average_rating|floatformat:1 }}</span>
+          </div>
+          <a href="#" class="reviews">· {{ total_reviews }} reviews</a>
+          <div class="location">
+            <i class="fas fa-map-marker-alt"></i> {{ activity.location }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Highlights -->
+      <div class="highlights">
+        {% for highlight in highlights %}
+        <div class="highlight-item">
+          <div class="highlight-icon">
+            {% if highlight.icon_image %}
+            <img
+              src="{{ highlight.icon_image.url }}"
+              alt="{{ highlight.icon_title }}"
+              class="highlight-png"
+            />
+            {% else %}
+            <i class="fas fa-{{ highlight.icon }}"></i>
+            {% endif %}
+          </div>
+          <div>
+            <h4>{{ highlight.icon_title }}</h4>
+            <p>{{ highlight.icon_description }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Description -->
+      <div class="description">
+        <p>{{ activity.description }}</p>
+      </div>
+
+      <!-- Reviews -->
+      <div class="reviews-section">
+        <div class="reviews-header">
+          <h2>
+            <span class="star-rating">
+              <i class="{% if average_rating >= 1 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 1 %} empty-star{% endif %}"></i>
+              <i class="{% if average_rating >= 2 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 2 %} empty-star{% endif %}"></i>
+              <i class="{% if average_rating >= 3 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 3 %} empty-star{% endif %}"></i>
+              <i class="{% if average_rating >= 4 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 4 %} empty-star{% endif %}"></i>
+              <i class="{% if average_rating >= 5 %}fas{% else %}far{% endif %} fa-star{% if average_rating < 5 %} empty-star{% endif %}"></i>
+            </span>
+            {{ average_rating|floatformat:1 }} · {{ total_reviews }} reviews
+          </h2>
+        </div>
+
+        <div class="reviews-list-container">
+          <div id="reviewsList" class="reviews-list" data-total="{{ total_reviews }}">
+            {% for review in reviews %}
+            <div class="review-item review-entry {% if forloop.counter > 10 %} hidden-review {% endif %}">
+              <div class="review-header">
+                <img src="{% static 'images/user-icon2.png' %}" alt="User" class="review-avatar" />
+                <div>
+                  <div class="reviewer-name">{{ review.customer.username }}</div>
+                  <div class="review-date">{{ review.created_at|date:'d M Y' }}</div>
+                </div>
+              </div>
+              <div class="review-rating star-rating">
+                <i class="{% if review.rating >= 1 %}fas{% else %}far{% endif %} fa-star{% if review.rating < 1 %} empty-star{% endif %}"></i>
+                <i class="{% if review.rating >= 2 %}fas{% else %}far{% endif %} fa-star{% if review.rating < 2 %} empty-star{% endif %}"></i>
+                <i class="{% if review.rating >= 3 %}fas{% else %}far{% endif %} fa-star{% if review.rating < 3 %} empty-star{% endif %}"></i>
+                <i class="{% if review.rating >= 4 %}fas{% else %}far{% endif %} fa-star{% if review.rating < 4 %} empty-star{% endif %}"></i>
+                <i class="{% if review.rating >= 5 %}fas{% else %}far{% endif %} fa-star{% if review.rating < 5 %} empty-star{% endif %}"></i>
+              </div>
+              <p>{{ review.comment }}</p>
+            </div>
+            {% empty %}
+            <div class="review-item">No reviews yet.</div>
+            {% endfor %}
+          </div>
+
+          {% if total_reviews > 10 %}
+          <div class="reviews-controls">
+            <button id="showMoreReviews" class="show-more-btn">
+              <span>Show more reviews</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <button id="showLessReviews" class="show-more-btn hidden">
+              <span>Show less</span>
+              <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="location-section">
+        <h2>Where you'll be</h2>
+        <p>{{ activity.map_location_description }}</p>
+        <div class="map-container">
+          <iframe
+            src="{{ activity.map_embed_url }}"
+            width="100%"
+            height="400"
+            style="border: 0; border-radius: 12px"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          >
+          </iframe>
+        </div>
+      </div>
+
+      <!--Things to know section-->
+      <div class="things-to-know">
+        <h2>Things to know</h2>
+        <div class="rules-grid">
+          <div class="rules-category">
+            <h4>Activity rules</h4>
+            <div class="rules-list">
+              <p>{{ activity.activity_rules|linebreaks}}</p>
+            </div>
+          </div>
+          <div class="rules-category">
+            <h4>Safety & equipment</h4>
+            <div class="rules-list">
+              <p>{{ activity.safety_equipment|linebreaks }}</p>
+            </div>
+          </div>
+          <div class="rules-category">
+            <h4>Cancellation policy</h4>
+            <div class="rules-list">
+              <p>{{ activity.cancellation_policy|linebreaks }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Booking Card -->
+    <form method="POST" id="booking-form" class="booking-card">
+      {% csrf_token %}
+
+      <div class="price">Rs{{ activity.base_price }} <span>/ person</span></div>
+
+      <div class="date-selector">
+        <div class="date-row">
+          <input
+            type="text"
+            name="date"
+            id="activity-date"
+            class="date-input"
+            placeholder="YYYY/MM/DD"
+            required
+          />
+        </div>
+        <div class="date-row">
+          <input
+            type="number"
+            name="guests"
+            id="guests"
+            class="date-input"
+            placeholder="Guests"
+            min="1"
+            max="10"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Hidden fields to store booking data -->
+      <input
+        type="hidden"
+        name="activity_id"
+        id="activity-id"
+        value="{{ activity.id }}"
+      />
+      <input type="hidden" name="booking_date" id="booking-date" />
+      <input type="hidden" name="num_people" id="num-people" />
+      <input type="hidden" name="total_price" id="total-price" />
+
+      <button type="submit" class="book-button" id="reserve-btn" disabled>
+        Reserve
+      </button>
+
+      <div class="no-charges">You won't be charged yet</div>
+
+      <div class="price-breakdown">
+        <div class="price-line">
+          <div id="price-per-guest">{{ activity.base_price }} x 1 guest</div>
+        </div>
+        <div class="price-line total">
+          <div>Total</div>
+          <div id="total-display">{{ activity.base_price }}</div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %} 
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="{% static 'js/activity_booking.js' %}"></script>
+
+{{ disabled_dates|json_script:"disabled-dates" }}
+{{ availability|json_script:"availability-data" }}
+
+<script>
+  const dateInput = document.getElementById("activity-date");
+  const guestsInput = document.getElementById("guests");
+  const reserveBtn = document.getElementById("reserve-btn");
+  const bookingForm = document.getElementById("booking-form");
+
+  const basePrice = parseFloat("{{ activity.base_price }}");
+  const maxParticipants = {{ activity.max_participants }};
+
+  const disabledDates = JSON.parse(document.getElementById("disabled-dates").textContent);
+  const availability = JSON.parse(document.getElementById("availability-data").textContent);
+
+  function sanitizeGuests() {
+      const maxGuests = parseInt(guestsInput.max) || maxParticipants;
+      let guests = parseInt(guestsInput.value) || 1;
+
+      if (guests > maxGuests) {
+          guests = maxGuests;
+          guestsInput.value = maxGuests;
+      }
+      if (guests < 1) {
+          guests = 1;
+          guestsInput.value = 1;
+      }
+      return guests;
+  }
+
+  function updatePriceBreakdown() {
+      const date = dateInput.value;
+      const guests = sanitizeGuests();
+
+      const total = basePrice * guests;
+      const totalField = document.getElementById("total-price");
+
+      if (date) {
+          reserveBtn.disabled = false;
+      } else {
+          reserveBtn.disabled = true;
+      }
+
+      // Update UI numbers
+      document.getElementById("price-per-guest").textContent =
+          `Rs${basePrice} x ${guests} guest${guests > 1 ? "s" : ""}`;
+
+      document.getElementById("total-display").textContent = `Rs${total}`;
+
+      // Hidden form fields
+      document.getElementById("booking-date").value = date;
+      document.getElementById("num-people").value = guests;
+      totalField.value = total;
+  }
+
+  function handleAvailability(dateStr) {
+      let maxSpots = availability[dateStr] ?? maxParticipants;
+      guestsInput.max = maxSpots;
+
+      sanitizeGuests();
+      updatePriceBreakdown();
+  }
+
+
+  flatpickr("#activity-date", {
+      minDate: "today",
+      disable: disabledDates,
+      dateFormat: "Y-m-d",
+      defaultDate: null,
+      onChange: function(selectedDates, dateStr) {
+          handleAvailability(dateStr);
+      }
+  });
+
+  guestsInput.addEventListener("input", function () {
+      sanitizeGuests();
+      updatePriceBreakdown();
+
+      const date = dateInput.value;
+      if (date) {
+          handleAvailability(date);
+      }
+  });
+
+  bookingForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const date = dateInput.value;
+      const guests = sanitizeGuests();
+
+      if (!date || !guests) {
+          alert("Please select date and number of guests");
+          return;
+      }
+
+      this.action = `{% url 'payment' activity.name %}`;
+      this.submit();
+  });
+
+  updatePriceBreakdown();
+  
+  // Reviews show more / scroll handling
+  (function(){
+    const reviewsList = document.getElementById('reviewsList');
+    if (!reviewsList) return;
+
+    const hiddenItems = document.querySelectorAll('.hidden-review');
+    const showMoreBtn = document.getElementById('showMoreReviews');
+    const showLessBtn = document.getElementById('showLessReviews');
+
+    // prevent body scroll when hovering over the reviews container
+    const container = document.querySelector('.reviews-list');
+    if (container) {
+      container.style.maxHeight = '320px';
+      container.style.overflowY = 'auto';
+      container.addEventListener('wheel', function(e){
+        const delta = e.deltaY;
+        const atTop = container.scrollTop === 0 && delta < 0;
+        const atBottom = container.scrollHeight - container.scrollTop === container.clientHeight && delta > 0;
+        if (atTop || atBottom) {
+          // allow page scroll
+          return;
+        }
+        e.stopPropagation();
+      }, { passive: false });
+    }
+
+    if (showMoreBtn) {
+      showMoreBtn.addEventListener('click', function(){
+        hiddenItems.forEach(i => i.classList.remove('hidden-review'));
+        container.style.maxHeight = '600px';
+        showMoreBtn.classList.add('hidden');
+        if (showLessBtn) showLessBtn.classList.remove('hidden');
+      });
+    }
+    if (showLessBtn) {
+      showLessBtn.addEventListener('click', function(){
+        hiddenItems.forEach(i => i.classList.add('hidden-review'));
+        container.style.maxHeight = '320px';
+        showLessBtn.classList.add('hidden');
+        if (showMoreBtn) showMoreBtn.classList.remove('hidden');
+        container.scrollTop = 0;
+      });
+    }
+  })();
+</script>
+{% endblock %}

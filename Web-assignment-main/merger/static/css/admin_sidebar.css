@@ -1,0 +1,726 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: #f5f5f5;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 280px;
+  background-color: #ffffff;
+  border-right: 1px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+  padding: 30px 24px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.sidebar-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.sidebar-header p {
+  font-size: 14px;
+  color: #666;
+}
+
+.nav-menu {
+  flex: 1;
+  padding: 20px 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  margin: 4px 16px;
+  border-radius: 8px;
+  color: #4a4a4a;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background-color: #f0f0f0;
+  color: #1a1a1a;
+  transform: translateX(4px);
+}
+
+.nav-item.active {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+/* Icon visibility - light mode */
+.nav-item .icon-white {
+  display: none;
+}
+
+.nav-item .icon-dark {
+  display: inline-block;
+}
+
+.nav-item.active .icon-white {
+  display: inline-block;
+}
+
+.nav-item.active .icon-dark {
+  display: none;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+}
+
+/* Flash messages container */
+.flash-messages {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Individual flash message */
+.flash-message {
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  min-width: 250px;
+  max-width: 500px;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideDown 0.3s forwards;
+  font-size: 14px;
+}
+
+/* Slide down animation */
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success messages */
+.flash-message.success {
+  background-color: #28a745;
+}
+
+/* Error messages */
+.flash-message.error {
+  background-color: #dc3545;
+}
+
+/* Info messages */
+.flash-message.info {
+  background-color: #17a2b8;
+}
+
+/* Dark Mode Toggle Button */
+.dark-mode-toggle {
+  background: none;
+  border: 1px solid #4a4a4a;
+  color: #4a4a4a;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 32px);
+  margin: 10px 16px;
+}
+
+.dark-mode-toggle:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.02);
+}
+
+/* ==================== DARK MODE STYLES ==================== */
+
+
+html.dark-mode body {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+html.dark-mode .sidebar {
+  background-color: #2d2d2d;
+  border-right-color: #4a4a4a;
+}
+
+html.dark-mode .sidebar-header h1 {
+  color: #ffffff;
+}
+
+html.dark-mode .sidebar-header p {
+  color: #b0b0b0;
+}
+
+html.dark-mode .sidebar-header {
+  border-bottom-color: #4a4a4a;
+}
+
+html.dark-mode .nav-item {
+  color: #e0e0e0;
+}
+
+html.dark-mode .nav-item:hover {
+  background-color: #3a3a3a;
+  color: #ffffff;
+}
+
+html.dark-mode .nav-item.active {
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+
+/* Icon visibility - dark mode */
+html.dark-mode .nav-item .icon-white {
+  display: inline-block;
+}
+
+html.dark-mode .nav-item .icon-dark {
+  display: none;
+}
+
+html.dark-mode .nav-item.active .icon-white {
+  display: none;
+}
+
+html.dark-mode .nav-item.active .icon-dark {
+  display: inline-block;
+}
+
+html.dark-mode .dark-mode-toggle {
+  border-color: #e0e0e0;
+  color: #e0e0e0;
+}
+
+html.dark-mode .dark-mode-toggle:hover {
+  background-color: #3a3a3a;
+}
+
+html.dark-mode .main-content {
+  background-color: #1a1a1a !important;
+  color: #ffffff;
+}
+
+html.dark-mode .review-item:hover {
+  background-color: #3a3a3a !important;
+}
+
+html.dark-mode .activity-item:hover {
+  background-color: #3a3a3a !important;
+}
+
+/* Remove colored backgrounds */
+html.dark-mode .main-content>*,
+html.dark-mode .content-wrapper,
+html.dark-mode .page-container,
+html.dark-mode .activities-container,
+html.dark-mode .customers-container,
+html.dark-mode .bookings-container,
+html.dark-mode .payments-container,
+html.dark-mode .reviews-container,
+html.dark-mode .page-header,
+html.dark-mode .activities-header,
+html.dark-mode .customers-header,
+html.dark-mode .section-header,
+html.dark-mode [class*="header"]:not(.sidebar-header):not(.table-header),
+html.dark-mode [class*="-header"]:not(.sidebar-header) {
+  background: #1a1a1a !important;
+  background-color: #1a1a1a !important;
+  background-image: none !important;
+  border-color: #4a4a4a !important;
+}
+
+html.dark-mode .review-rating {
+  color: #ffc107 !important;
+  filter: none !important;
+}
+
+html.dark-mode .highlight-item {
+  background-color: #2d2d2d !important;
+  border: 1px solid #4a4a4a !important;
+}
+
+html.dark-mode .image-dropzone {
+  background-color: #2d2d2d !important;
+  border: 2px dashed #4a4a4a !important;
+  color: #b0b0b0 !important;
+}
+
+/* Add buttons - BLACK text on white background */
+html.dark-mode .add-btn,
+html.dark-mode .btn-primary,
+html.dark-mode [class*="add-"],
+html.dark-mode button[class*="add"],
+html.dark-mode a[class*="add-"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #ffffff !important;
+}
+
+/* Header text */
+html.dark-mode .page-header *,
+html.dark-mode .section-header *,
+html.dark-mode [class*="header"]:not(.sidebar-header) * {
+  color: #ffffff;
+}
+
+html.dark-mode .add-btn:hover,
+html.dark-mode .btn-primary:hover {
+  background-color: #e0e0e0 !important;
+  color: #000000 !important;
+}
+
+/* Action buttons - white icons, NO red background */
+html.dark-mode .actions img,
+html.dark-mode .action-icon,
+html.dark-mode td img:not(.status-badge img),
+html.dark-mode [class*="action"] img {
+  filter: invert(1) brightness(1.2) !important;
+}
+
+html.dark-mode .actions button,
+html.dark-mode .actions button[onclick*="delete"],
+html.dark-mode .actions button[class*="delete"],
+html.dark-mode td button,
+html.dark-mode td button[onclick*="delete"],
+html.dark-mode td button[class*="delete"] {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Modals - blur backdrop */
+html.dark-mode .modal-overlay,
+html.dark-mode .modal,
+html.dark-mode #djangoAdminModal,
+html.dark-mode #logoutModal {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+/* Modal content - COMPLETE inversion */
+html.dark-mode .modal-content {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border: 1px solid #4a4a4a !important;
+}
+
+/* Modal sections - grey tones inverted */
+html.dark-mode .modal-content>div,
+html.dark-mode .modal-content section,
+html.dark-mode .modal-content .modal-body,
+html.dark-mode .modal-content [class*="section"],
+html.dark-mode .modal-content [class*="group"],
+html.dark-mode .modal-content [class*="information"] {
+  background-color: #1a1a1a  !important;
+  border-color: #1a1a1a  !important;
+}
+
+/* Modal form elements - dark backgrounds */
+html.dark-mode .modal-content input,
+html.dark-mode .modal-content textarea,
+html.dark-mode .modal-content select {
+  background-color: #3a3a3a !important;
+  color: #ffffff !important;
+  border: 1px solid #4a4a4a !important;
+}
+
+html.dark-mode .modal-content input:focus,
+html.dark-mode .modal-content textarea:focus,
+html.dark-mode .modal-content select:focus {
+  background-color: #3a3a3a !important;
+  border-color: #6eb5ff !important;
+}
+
+html.dark-mode .modal-content input::placeholder,
+html.dark-mode .modal-content textarea::placeholder {
+  color: #b0b0b0 !important;
+}
+
+/* Modal text elements */
+html.dark-mode .modal-content label,
+html.dark-mode .modal-content h1,
+html.dark-mode .modal-content h2,
+html.dark-mode .modal-content h3,
+html.dark-mode .modal-content h4,
+html.dark-mode .modal-content h5,
+html.dark-mode .modal-content h6,
+html.dark-mode .modal-content p,
+html.dark-mode .modal-content span:not(.status-badge) {
+  color: #ffffff !important;
+}
+
+/* Modal headings with grey bg */
+html.dark-mode .modal-content h2,
+html.dark-mode .modal-content h3,
+html.dark-mode .modal-content .modal-header,
+html.dark-mode .modal-content [class*="heading"],
+html.dark-mode .modal-content [class*="title"] {
+  color: #ffffff !important;
+}
+
+/* Delete button - RED */
+
+html.dark-mode .create-btn.danger{
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  border: 1px solid #dc3545 !important;
+}
+
+html.dark-mode .create-btn.danger:hover{
+  background-color: #c82333 !important;
+}
+
+html.dark-mode .modal-content button.delete-btn,
+html.dark-mode .modal-content button[class*="delete"],
+html.dark-mode .modal-content button.yes-btn,
+html.dark-mode button.delete-btn,
+html.dark-mode button[class*="delete"] {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  border: 1px solid #dc3545 !important;
+}
+
+html.dark-mode .modal-content button.delete-btn:hover,
+html.dark-mode .modal-content button[class*="delete"]:hover,
+html.dark-mode .modal-content button.yes-btn:hover {
+  background-color: #c82333 !important;
+}
+
+html.dark-mode .form-actions.sticky-footer {
+  background-color: #3c3c3c !important;
+  border-top: 1px solid #4a4a4a00 !important;
+}
+
+html.dark-mode .form-actions.center{
+  background-color: #1a1a1a !important;
+}
+
+/* Cancel button - GRAY */
+html.dark-mode .modal-content button.cancel-btn,
+html.dark-mode .modal-content button.no-btn,
+html.dark-mode .modal-content button[class*="cancel"] {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #000000 !important;
+}
+
+html.dark-mode .modal-content button.cancel-btn:hover,
+html.dark-mode .modal-content button.no-btn:hover {
+  background-color: #5a6268 !important;
+}
+
+/* Save button - GREEN */
+html.dark-mode .modal-content button[type="submit"]:not(.delete-btn):not([class*="delete"]),
+html.dark-mode .modal-content button.save-btn,
+html.dark-mode .modal-content button[class*="save"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+html.dark-mode .modal-content button[type="submit"]:hover,
+html.dark-mode .modal-content button.save-btn:hover {
+  background-color: #5a6268 !important;
+}
+
+/* Modal close button */
+html.dark-mode .modal-content .close,
+html.dark-mode .modal-content [class*="close"],
+html.dark-mode .modal-content button[aria-label="Close"] {
+  color: #ffffff !important;
+  opacity: 0.8;
+  background: transparent !important;
+}
+
+html.dark-mode .modal-content .close:hover {
+  opacity: 1;
+}
+
+/* Text elements */
+html.dark-mode h1,
+html.dark-mode h2,
+html.dark-mode h3,
+html.dark-mode h4,
+html.dark-mode h5,
+html.dark-mode h6,
+html.dark-mode p,
+html.dark-mode label,
+html.dark-mode span:not(.status-badge):not([class*="status-"]):not([class*="badge-"]),
+html.dark-mode div:not(.status-badge):not([class*="status-"]):not([class*="badge-"]) {
+  color: #ffffff ;
+}
+
+/* Summary/Stat Cards */
+html.dark-mode .stat-card,
+html.dark-mode .summary-card,
+html.dark-mode .stats-grid>div,
+html.dark-mode .summary-grid>div,
+html.dark-mode [class*="stat-"],
+html.dark-mode [class*="summary-"] {
+  background-color: #2d2d2d !important;
+  color: #ffffff !important;
+}
+
+html.dark-mode .stat-card *:not(.status-badge):not([class*="status-"]),
+html.dark-mode .summary-card *:not(.status-badge):not([class*="status-"]) {
+  color: #ffffff !important;
+}
+
+/* Status badges */
+html.dark-mode .status-completed,
+html.dark-mode .badge-completed,
+.status-completed,
+.badge-completed {
+  background-color: #E3F2FD !important;
+  color: #1565C0 !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-badge.completed {
+  background-color: #E3F2FD !important;
+  color: #1565C0 !important;
+  filter: none !important;
+}
+
+html.dark-mode .stat-badge {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+html.dark-mode .status-paid,
+html.dark-mode .badge-paid,
+.status-paid,
+.badge-paid {
+  background-color: #28a745 !important;
+  color: #155724 !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-badge.paid {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-pending,
+html.dark-mode .badge-pending,
+.status-pending,
+.badge-pending {
+  background-color: #ffc107 !important;
+  color: #000000 !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-badge.pending {
+  background-color: #ffc107 !important;
+  color: #000000 !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-cancelled,
+html.dark-mode .badge-cancelled,
+.status-cancelled,
+.badge-cancelled {
+  background-color: #FCE8E6 !important;
+  color: #C62828 !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-badge.cancelled {
+  background-color: #FCE8E6 !important;
+  color: #C62828 !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-refunded,
+html.dark-mode .badge-refunded,
+.status-refunded,
+.badge-refunded {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-badge.refunded {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-confirmed,
+html.dark-mode .badge-confirmed,
+.status-confirmed,
+.badge-confirmed {
+  background-color: #E6F4EA !important;
+  color: #20744A !important;
+  filter: none !important;
+}
+
+html.dark-mode .status-badge.confirmed {
+  background-color: #E6F4EA !important;
+  color: #20744A !important;
+  filter: none !important;
+}
+
+/* Tables */
+html.dark-mode table {
+  background-color: #2d2d2d !important;
+  color: #ffffff;
+  border: 1px solid #4a4a4a !important;
+}
+
+html.dark-mode thead,
+html.dark-mode th {
+  background-color: #3a3a3a !important;
+  color: #ffffff !important;
+  border-color: #4a4a4a !important;
+}
+
+html.dark-mode tbody,
+html.dark-mode td {
+  background-color: #2d2d2d !important;
+  color: #ffffff !important;
+  border-color: #4a4a4a !important;
+}
+
+html.dark-mode tr:hover td {
+  background-color: #3a3a3a !important;
+}
+
+/* Cards and containers */
+html.dark-mode .card,
+html.dark-mode .box,
+html.dark-mode .panel,
+html.dark-mode .container:not(.sidebar .container) {
+  background-color: #2d2d2d !important;
+  color: #ffffff !important;
+  border: 1px solid #4a4a4a !important;
+}
+
+/* Forms */
+html.dark-mode input,
+html.dark-mode textarea,
+html.dark-mode select {
+  background-color: #3a3a3a !important;
+  color: #ffffff !important;
+  border-color: #4a4a4a !important;
+}
+
+html.dark-mode input::placeholder,
+html.dark-mode textarea::placeholder {
+  color: #b0b0b0 !important;
+}
+
+/* Buttons */
+
+html.dark-mode button:not(.logout-btn):not(.dark-mode-toggle):not(.modal-btn):not(.add-btn):not(.btn-primary) {
+  background-color: #3a3a3a;
+  color: #ffffff;
+  border-color: #4a4a4a;
+}
+
+html.dark-mode .logout-btn {
+  background-color: #3d3c3c !important;
+  color: #ffffff !important;
+  border: 1px solid #3d3c3c !important;
+}
+
+html.dark-mode .logout-btn:hover {
+  background-color: #9fa0a0 !important;
+  color: #ffffff !important;
+}
+
+html.dark-mode button:not(.logout-btn):not(.dark-mode-toggle):not(.modal-btn):not(.add-btn):not(.btn-primary):hover {
+  background-color: #4a4a4a;
+}
+
+html.dark-mode .suspend-btn {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  border: 1px solid #dc3545 !important;
+}
+
+/* Links */
+html.dark-mode a:not(.nav-item) {
+  color: #6eb5ff;
+}
+
+html.dark-mode a:not(.nav-item):hover {
+  color: #9fcdff;
+}
+
+/* Logout button icon */
+html.dark-mode .logout-btn .logout-icon img {
+  filter: invert(1);
+}
+
+/* Star ratings */
+html.dark-mode .star,
+html.dark-mode .rating-star,
+html.dark-mode [class*="star"],
+html.dark-mode .fa-star {
+  color: #ffc107 !important;
+  filter: none !important;
+}
+
+html.dark-mode .star::before,
+html.dark-mode .rating-star::before,
+html.dark-mode .fa-star::before {
+  color: #ffc107 !important;
+}
+
+html.dark-mode .dialog{
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+html.dark-mode .dialog-overlay{
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+html.dark-mode .dialog-btn.confirm {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  border: 1px solid #dc3545 !important;
+}
+
+html.dark-mode .dialog-btn.confirm:hover {
+  background-color: #c82333 !important;
+}

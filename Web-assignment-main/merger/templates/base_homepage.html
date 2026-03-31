@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}My Website{% endblock %}</title>
+
+  {% load static %}
+  {% csrf_token %}
+
+  <script src="{% static 'js/webp-detect.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/header.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/guest_homepage.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/dark_mode.css' %}" />
+  
+  <!-- Font Awesome for universal icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  {% block extrahead %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <!-- Logo -->
+      <div class="logo">
+        <a href="{% url 'homepage' %}" class="logo-link">
+          <img src="{% static 'images/logo.png' %}" alt="Grand Blue Logo" />
+        </a>
+      </div>
+
+      <!-- Navigation and Actions grouped on the right -->
+      <div class="right-content">
+        <nav class="nav-links">
+          <a href="{% url 'homepage' %}">Home</a>
+          <div class="dropdown">
+            <a href="#" class="dropdown-trigger"><span>Activities</span></a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="{% url 'activity_list' %}#catamaran">Catamaran</a>
+              </li>
+              <li>
+                <a href="{% url 'activity_list' %}#scuba-diving">Scuba Diving</a>
+              </li>
+              <li>
+                <a href="{% url 'activity_list' %}#dolphin-watching">Dolphin Watching</a>
+              </li>
+              <li>
+                <a href="{% url 'activity_list' %}#water-ski">Water Skiing</a>
+              </li>
+              <li>
+                <a href="{% url 'activity_list' %}#speed-boat">Speed Boating</a>
+              </li>
+            </ul>
+          </div>
+          <a href="{% url 'about_us' %}">About Us</a>
+        </nav>
+        <div class="header-actions">
+          {% if user.is_authenticated %}
+          <!-- Logged-in user section -->
+          <div class="user-dropdown">
+            <a href="#" class="user-trigger">
+              <img src="{% static 'images/user-icon.png' %}" alt="User" class="user-icon" />
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url 'profile' %}">Manage Profile</a></li>
+              <li><a href="{% url 'contact' %}">Contact Us</a></li>
+              <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+          </div>
+          {% else %}
+          <!-- Guest section -->
+          <div class="auth-links">
+            <a href="{% url 'login' %}" class="login-link">Log In</a>
+            <a href="{% url 'signup' %}" class="signup-link">Sign Up</a>
+          </div>
+          {% endif %}
+          <button id="darkModeToggle" title="Toggle Dark/Light Mode"
+            style="background: none; border: none; cursor: pointer; padding: 0.5rem;">
+            <span id="darkModeIcon">
+              <!-- Moon icon (default) -->
+              <img id="icon-moon" src="{% static 'images/whitemoondarkmode.png' %}" alt="Dark Mode" width="24"
+                height="24">
+              <!-- Sun icon (hidden by default) -->
+              <img id="icon-sun" src="{% static 'images/whitesundarkmode.png' %}" alt="Light Mode" width="24"
+                height="24" style="display:none;">
+            </span>
+          </button>
+          <a href="{% url 'activity_list' %}" class="book-btn">Book Now</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    {% block content %}
+    <!-- Page content will be inserted here -->
+    {% endblock %}
+  </main>
+
+  {% if messages %}
+  <ul class="flash-messages">
+    {% for message in messages %}
+    <li class="flash-message {{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-section footer-left">
+        <a href="#" class="footer-logo-link">
+          <img src="{% static 'images/logo.png' %}" alt="Grand Blue Logo" class="footer-logo" />
+        </a>
+        <p class="footer-description">
+          Your premier destination for unforgettable sea activities.
+          Experience the thrill of the ocean with style.
+        </p>
+        <div class="footer-social">
+          <a href="https://x.com/GrandBlue531174" class="social-link" target="_blank" rel="noopener noreferrer"><img
+              src="{% static 'images/twitter-logo.png' %}" alt="Twitter" class="social-icon" /></a>
+          <a href="https://www.facebook.com/profile.php?id=61584532134331" class="social-link" target="_blank"
+            rel="noopener noreferrer"><img src="{% static 'images/facebook-logo.png' %}" alt="Facebook"
+              class="social-icon" /></a>
+          <a href="https://www.instagram.com/grandblue.mu/" class="social-link" target="_blank"
+            rel="noopener noreferrer"><img src="{% static 'images/instagram-logo.png' %}" alt="Instagram"
+              class="social-icon" /></a>
+        </div>
+      </div>
+      <div class="footer-section footer-middle">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="{% url 'homepage' %}">Home</a></li>
+          <li><a href="{% url 'about_us' %}">About Us</a></li>
+          <li><a href="{% url 'activity_list' %}">Book Now</a></li>
+          <li><a href="{% url 'termsandcondition' %}">Terms and Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-section footer-right">
+        <h3>Contact Information</h3>
+        <p><a href="{% url 'contact' %}">Contact Us</a></p>
+        <p><a href="mailto:grandblue.mu@gmail.com">grandblue.mu@gmail.com</a></p>
+        <p>(+230)-234-567-8900</p>
+      </div>
+    </div>
+    <hr class="footer-separator" />
+    <div class="footer-copyright">
+      <p>&copy; 2025 grand blue. All rights reserved.</p>
+    </div>
+  </footer>
+
+    <!-- Chatbot Integration -->
+  {% if request.resolver_match %}
+    {% if request.resolver_match.url_name not in "login signup admin_login profile_booking notifications profile payment password_reset password_reset_done password_reset_confirm password_reset_complete dashboard reviews activities bookings payments customers_page add_activity delete_activity cancel_booking download_revenue_report delete_review user_cancel_booking review" and not request.path|slice:":6" == "/admin" %}
+      {% include 'chatbot/widget.html' %}
+    {% endif %}
+  {% endif %}
+
+  <script src="{% static 'js/base_homepage.js' %}"></script>
+  <script src="{% static 'js/dark_mode.js' %}"></script>
+  {% block js %}{% endblock %}
+</body>
+
+</html>

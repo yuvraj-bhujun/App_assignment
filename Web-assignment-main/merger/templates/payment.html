@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - {{ activity_name }}</title>
+  <link rel="stylesheet" href="{% static 'css/payment.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/dark_mode.css' %}" />
+</head>
+
+<body>
+  <button onclick="history.back()" class="back-btn">← Back</button>
+
+  <div class="checkout-container">
+    <!-- Booking Summary -->
+    <aside class="summary-section">
+      <h2>Booking Summary</h2>
+      <div class="summary-item">
+        <span><strong>Activity:</strong></span>
+        <span>{{ activity_name }}</span>
+      </div>
+      <div class="summary-item">
+        <span><strong>Date:</strong></span>
+        <span>{{ activity_date }}</span>
+      </div>
+      <div class="summary-item">
+        <span><strong>Number of People: </strong> </span>
+        <span>{{ num_people }}</span>
+      </div>
+      <div class="summary-item total">
+        <span>Total Price:</span>
+        <span>Rs{{ total_price }}</span>
+      </div>
+    </aside>
+
+    <!-- Payment Form -->
+    <form method="post" class="payment-section">
+      {% csrf_token %}
+      <h1 class="payment-title">Pay with card</h1>
+      <p class="payment-subtitle">Enter your card details</p>
+
+      <!-- Display non-field errors -->
+      {% if form.non_field_errors %}
+      <div class="alert alert-error">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="card-icons">
+        <img
+          src="https://aimg.kwcdn.com/upload_aimg/temu/da7f463a-916f-4d91-bcbb-047317a1c35e.png.slim.png?imageView2/2/w/120/q/70/format/avif"
+          alt="Visa" class="card-icon" />
+        <img
+          src="https://aimg.kwcdn.com/upload_aimg/temu/b79a2dc3-b089-4cf8-a907-015a25ca12f2.png.slim.png?imageView2/2/w/120/q/70/format/avif"
+          alt="Verve" class="card-icon" />
+      </div>
+
+      <div class="form-group">
+        <label for="id_card_number">Card Number</label>
+        {% if form.card_number.errors %}
+        <div class="error-message">
+          {% for error in form.card_number.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+        <input type="text" id="id_card_number" name="card_number" maxlength="19" required
+          placeholder="0000 0000 0000 0000" class="card-input {% if form.card_number.errors %}input-error{% endif %}"
+          value="{{ form.card_number.value|default:'' }}" />
+      </div>
+
+      <div class="form-group">
+        <label for="id_card_name">Name on Card</label>
+        {% if form.card_name.errors %}
+        <div class="error-message">
+          {% for error in form.card_name.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+        <input type="text" id="id_card_name" name="card_name" required placeholder="John Doe"
+          class="{% if form.card_name.errors %}input-error{% endif %}" value="{{ form.card_name.value|default:'' }}" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="id_expiry_date">Expiry Date</label>
+          {% if form.expiry_date.errors %}
+          <div class="error-message">
+            {% for error in form.expiry_date.errors %}{{ error }}{% endfor %}
+          </div>
+          {% endif %}
+          <input type="text" id="id_expiry_date" name="expiry_date" required placeholder="MM/YY"
+            class="expiry-input {% if form.expiry_date.errors %}input-error{% endif %}"
+            value="{{ form.expiry_date.value|default:'' }}" />
+        </div>
+        <div class="form-group">
+          <label for="id_cvv">CVC</label>
+          {% if form.cvv.errors %}
+          <div class="error-message">
+            {% for error in form.cvv.errors %}{{ error }}{% endfor %}
+          </div>
+          {% endif %}
+          <input type="text" id="id_cvv" name="cvv" maxlength="3" required placeholder="123"
+            class="cvv-input {% if form.cvv.errors %}input-error{% endif %}" value="{{ form.cvv.value|default:'' }}" />
+        </div>
+      </div>
+
+      <!-- Hidden fields for booking data -->
+      <input type="hidden" name="activity_id" value="{{ activity_id }}" />
+      <input type="hidden" name="booking_date" value="{{ activity_date }}" />
+      <input type="hidden" name="num_people" value="{{ num_people }}" />
+      <input type="hidden" name="total_price" value="{{ total_price }}" />
+
+      <button type="submit" class="pay-button">
+        Pay Rs{{ total_price }}
+      </button>
+    </form>
+  </div>
+
+  {% if messages %}
+    <ul class="flash-messages">
+      {% for message in messages %}
+      <li class="flash-message {{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <script>
+    // Format card number with spaces (max 16 digits)
+    document
+      .getElementById("id_card_number")
+      .addEventListener("input", function (e) {
+        // Remove all non-digit characters
+        let value = e.target.value.replace(/\D/g, "");
+
+        // Limit to exactly 16 digits
+        value = value.slice(0, 16);
+
+        // Format into groups of 4 with spaces between them
+        let formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1 ");
+
+        e.target.value = formattedValue;
+      });
+
+    document.getElementById("id_expiry_date").addEventListener("input", function (e) {
+      let input = e.target;
+      let value = input.value.replace(/\D/g, ""); // digits only
+
+      const now = new Date();
+      const currentYear = now.getFullYear() % 100;       // YY (e.g., 25)
+      const maxYear = currentYear + 10;                  // 10-year future limit
+      const currentMonth = now.getMonth() + 1;
+
+      // -----------------------
+      // HANDLE MONTH
+      // -----------------------
+      if (value.length >= 1) {
+          let first = value[0];
+
+          // If user types 0–1 → allow normally
+          // If user types 2–9 → auto-prepend 0
+          if (first > "1") {
+              value = "0" + first + value.substring(1);
+          }
+      }
+
+      if (value.length >= 2) {
+          let month = parseInt(value.substring(0, 2));
+
+          // Clamp month range
+          if (month < 1) month = 1;
+          if (month > 12) month = 12;
+
+          value = month.toString().padStart(2, "0") + value.substring(2);
+      }
+
+      // Insert slash when enough digits for MM
+      if (value.length > 2) {
+          value = value.substring(0, 2) + "/" + value.substring(2, 4);
+      }
+
+      // -----------------------
+      // HANDLE YEAR
+      // -----------------------
+      if (value.length >= 5) {
+          let year = parseInt(value.substring(3, 5));
+
+          // Year must be within [currentYear, maxYear]
+          if (year < currentYear) year = currentYear;
+          if (year > maxYear) year = maxYear;
+
+          value = value.substring(0, 3) + year.toString().padStart(2, "0");
+      }
+
+      input.value = value.substring(0, 5);
+  });
+
+    // Allow only numbers for CVV
+    document.getElementById("id_cvv").addEventListener("input", function (e) {
+      e.target.value = e.target.value.replace(/\D/g, "");
+    });
+  </script>
+  <script src="{% static 'js/dark_mode.js' %}"></script>
+</body>
+
+</html>

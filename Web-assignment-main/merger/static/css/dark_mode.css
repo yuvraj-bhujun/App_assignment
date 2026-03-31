@@ -1,0 +1,802 @@
+/* Dark Mode Styles */
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --text-muted: #666666;
+    --border-color: #dee2e6;
+    --card-bg: #ffffff;
+    --input-bg: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+html.dark-mode {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #3a3a3a;
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --text-muted: #b0b0b0;
+    --border-color: #4a4a4a;
+    --card-bg: #2d2d2d;
+    --input-bg: #3a3a3a;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Apply dark mode to main content area only, excluding homepage and about us */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* Dark mode for sections, divs, and containers */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content section:not(.contact-hero):not(.hero),
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .container:not(header .container),
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .content,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .wrapper {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary);
+}
+
+/* Cards and boxes */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .card:not(.card-image),
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .box,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .panel {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Forms and inputs */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content input,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content textarea,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content select {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode body:not(.homepage):not(.about-us) .main-content input::placeholder,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content textarea::placeholder {
+    color: var(--text-muted) !important;
+}
+
+/* Text elements */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content h1,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content h2,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content h3,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content h4,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content h5,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content h6,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content p,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content span:not(.search-icon):not(.btn-icon),
+html.dark-mode body:not(.homepage):not(.about-us) .main-content label,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content li {
+    color: var(--text-primary);
+}
+
+/* Links - maintain some color but adjust for dark mode */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content a:not(.book-btn):not(.signup-link):not(.login-link):not(.book-btn1) {
+    color: #6eb5ff;
+}
+
+html.dark-mode body:not(.homepage):not(.about-us) .main-content a:not(.book-btn):not(.signup-link):not(.login-link):not(.book-btn1):hover {
+    color: #9fcdff;
+}
+
+/* Modals */
+html.dark-mode .modal-content,
+html.dark-mode .modal {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary);
+}
+
+/* Tables */
+html.dark-mode .main-content table {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+html.dark-mode .main-content th,
+html.dark-mode .main-content td {
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Exclude elements with background images or images */
+html.dark-mode .hero,
+html.dark-mode .contact-hero,
+html.dark-mode [style*="background-image"],
+html.dark-mode .has-bg-image,
+html.dark-mode .card-image,
+html.dark-mode .card-image *,
+html.dark-mode picture,
+html.dark-mode img {
+    filter: none !important;
+}
+
+/* Ensure header and footer backgrounds are preserved */
+html.dark-mode header,
+html.dark-mode footer,
+html.dark-mode header *,
+html.dark-mode footer *,
+html.dark-mode .footer,
+html.dark-mode .footer * {
+    background: initial !important;
+    background-color: initial !important;
+    filter: none !important;
+    border-color: initial !important;
+}
+
+/* Specifically preserve header gradient and footer background */
+html.dark-mode header {
+    background: linear-gradient(270.22deg, #005F82 0%, #00141C 80%) !important;
+}
+
+html.dark-mode .footer {
+    background-color: #0B0927 !important;
+}
+
+/* Explicitly force header text to remain white */
+html.dark-mode header,
+html.dark-mode header * {
+    color: white !important;
+}
+
+/* Explicitly force footer text to remain in original colors (white/gray) */
+html.dark-mode footer h3,
+html.dark-mode .footer h3 {
+    color: white !important;
+}
+
+html.dark-mode footer p,
+html.dark-mode footer a,
+html.dark-mode footer span,
+html.dark-mode footer div,
+html.dark-mode .footer p,
+html.dark-mode .footer a,
+html.dark-mode .footer span,
+html.dark-mode .footer div {
+    color: #ccc !important;
+}
+
+html.dark-mode .footer-description {
+    color: #ccc !important;
+}
+
+/* Explicitly force original text colors for header links */
+html.dark-mode .nav-links a,
+html.dark-mode .dropdown-trigger,
+html.dark-mode .dropdown-trigger span,
+html.dark-mode header a {
+    color: white !important;
+}
+
+/* Restore Login/Signup button colors in header */
+html.dark-mode header .auth-links a.login-link {
+    color: #007bff !important;
+}
+
+html.dark-mode header .auth-links a.signup-link {
+    color: white !important;
+    background-color: #28a745 !important;
+}
+
+html.dark-mode .nav-links a:hover,
+html.dark-mode .dropdown-trigger:hover,
+html.dark-mode .dropdown-menu li a:hover,
+html.dark-mode header a:hover {
+    color: #87ceeb !important;
+}
+
+/* Book Now button in header - hover effect in dark mode (override above rule) */
+html.dark-mode header .book-btn:hover {
+    background-color: white !important;
+    color: #005f8d !important;
+}
+
+/* Toggle Button Style */
+#darkModeToggle {
+    background: none;
+    border: 1px solid white;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+#darkModeToggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+/* Specific fixes for common white backgrounds */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .filter-search-container,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .search-bar,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .contact-section,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .contact-form-wrapper,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .profile-section,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .activity-group {
+    background-color: var(--bg-primary) !important;
+}
+
+/* REMOVED .grid from above to fix black rectangle in signup page */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .grid:not(.gap-y-6) {
+    /* Exclude the signup grid specifically if needed, or just remove .grid globally if it causes issues */
+    background-color: var(--bg-primary) !important;
+}
+
+/* Fix for light gray backgrounds */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content [style*="background-color: #f"],
+html.dark-mode body:not(.homepage):not(.about-us) .main-content [style*="background-color: #e"],
+html.dark-mode body:not(.homepage):not(.about-us) .main-content [style*="background: #f"],
+html.dark-mode body:not(.homepage):not(.about-us) .main-content [style*="background: #e"] {
+    background-color: var(--bg-secondary) !important;
+}
+
+/* Login and Signup Pages - Tailwind-based styling */
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .bg-gray-50 {
+    background-color: var(--bg-primary) !important;
+}
+
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .bg-white,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .bg-white\/90 {
+    background-color: var(--card-bg) !important;
+}
+
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .text-gray-900 {
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .text-gray-600,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .text-gray-700 {
+    color: var(--text-secondary) !important;
+}
+
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .border-gray-100,
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .border-gray-300 {
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode body:not(.homepage):not(.about-us) .main-content .placeholder-gray-500::placeholder {
+    color: var(--text-muted) !important;
+}
+
+/* Keep blue and green buttons on login/signup unchanged */
+html.dark-mode .main-content .bg-blue-600,
+html.dark-mode .main-content .bg-blue-700,
+html.dark-mode .main-content .bg-green-50,
+html.dark-mode .main-content .bg-red-50,
+html.dark-mode .main-content .text-blue-600,
+html.dark-mode .main-content .text-green-700,
+html.dark-mode .main-content .text-red-700,
+html.dark-mode .main-content .bg-green-600,
+html.dark-mode .main-content .bg-green-700,
+html.dark-mode .main-content .text-green-300 {
+    /* Keep Tailwind alert and button colors */
+    filter: none !important;
+}
+
+/* Specific page fixes */
+
+/* Activities Browse Page */
+html.dark-mode .main-content .card-overlay {
+    background-color: var(--card-bg);
+}
+
+html.dark-mode .main-content .activity-title,
+html.dark-mode .main-content .activity-desc,
+html.dark-mode .main-content .activity-info {
+    color: var(--text-primary);
+}
+
+html.dark-mode .main-content .divider {
+    background-color: #6eb5ff;
+}
+
+/* Contact Page */
+html.dark-mode .main-content .form-control {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .main-content .form-group label {
+    color: var(--text-primary);
+}
+
+html.dark-mode .main-content .alert {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Profile and User Pages */
+html.dark-mode body:not(.homepage):not(.about-us) {
+    /* Override light gradient on body for profile pages */
+    background: var(--bg-primary) !important;
+}
+
+html.dark-mode .main-content .profile-wrapper,
+html.dark-mode .main-content .profile-content,
+html.dark-mode .sidebar,
+html.dark-mode .main-content .bookings-container,
+html.dark-mode .main-content .header {
+    background: var(--card-bg) !important;
+    background-color: var(--card-bg) !important;
+}
+
+html.dark-mode .main-content .bookings-table tbody tr:hover {
+    background: var(--bg-secondary) !important;
+    transform: scale(1.01);
+}
+
+html.dark-mode .main-content .bookings-table thead th {
+    color: var(--text-muted) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+html.dark-mode .main-content .bookings-table tbody td {
+    color: var(--text-primary) !important;
+    border-bottom-color: var(--border-color) !important;
+}
+
+html.dark-mode .main-content .nav-item {
+    color: var(--text-secondary) !important;
+}
+
+html.dark-mode .main-content .nav-item:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode .main-content .nav-item.active {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05) !important;
+}
+
+html.dark-mode .main-content .sidebar-header h2,
+html.dark-mode .main-content .header h1 {
+    color: var(--text-primary) !important;
+}
+
+/* Logout Button in Sidebar */
+html.dark-mode .logout-btn {
+    background: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .logout-btn:hover {
+    background: var(--bg-secondary) !important;
+    color: #ff6b6b !important;
+}
+
+/* Cancel Booking Popup */
+html.dark-mode .confirm-modal__card {
+    background: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode .confirm-modal__card h2 {
+    color: var(--text-primary) !important;
+}
+
+/* Review Page Fixes */
+html.dark-mode .main-content .info-label {
+    color: var(--text-muted) !important;
+}
+
+html.dark-mode .main-content .info-value,
+html.dark-mode .main-content .card-title,
+html.dark-mode .main-content .page-title,
+html.dark-mode .main-content .rating-title {
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode .main-content .stars-container {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .main-content .review-textarea {
+    background: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Ensure buttons maintain their styling */
+html.dark-mode .main-content button,
+html.dark-mode .main-content .btn,
+html.dark-mode .main-content .book-btn1,
+html.dark-mode .main-content .filter-btn {
+    /* Keep original button colors */
+    filter: none !important;
+}
+
+/* Homepage Specific Dark Mode */
+html.dark-mode body.homepage .activities .card,
+html.dark-mode body.homepage .why-choose .feature {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+}
+
+html.dark-mode body.homepage .activities .card *,
+html.dark-mode body.homepage .why-choose .feature * {
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode body.homepage .activities .card button {
+    color: white !important;
+}
+
+/* Homepage Reviews Section Dark Mode */
+html.dark-mode body.homepage .reviews .header,
+html.dark-mode body.homepage .reviews .review-container {
+    background: rgba(45, 45, 45, 0.9) !important;
+    /* Dark background with opacity */
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode body.homepage .reviews .header h2,
+html.dark-mode body.homepage .reviews .header p,
+html.dark-mode body.homepage .reviews .review-text,
+html.dark-mode body.homepage .reviews .author-info strong,
+html.dark-mode body.homepage .reviews .author-info span,
+html.dark-mode body.homepage .reviews .buttons {
+    color: white !important;
+}
+
+html.dark-mode body.homepage .reviews .buttons {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+html.dark-mode .btn-review {
+    color: #1971c2 !important;
+}
+
+html.dark-mode .btn-review:hover {
+    background-color: #1971c2 !important;
+    color: white !important;
+}
+
+html.dark-mode body.homepage .reviews .buttons:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Payment Page Specific Dark Mode */
+html.dark-mode .checkout-container,
+html.dark-mode .summary-section,
+html.dark-mode .payment-section {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode .checkout-container input {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .summary-section {
+    border: 1px solid var(--border-color);
+}
+
+html.dark-mode .payment-title {
+    color: white !important;
+}
+
+/* Activity Booking Page - Dark Mode Inputs */
+html.dark-mode .date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+html.dark-mode .date-input::-webkit-inner-spin-button {
+    filter: invert(1);
+}
+
+/* Force specific text colors for alerts in dark mode to ensure visibility against light backgrounds */
+html.dark-mode .main-content .text-red-700,
+html.dark-mode .text-red-700 {
+    color: #b91c1c !important;
+    /* Tailwind red-700 */
+}
+
+html.dark-mode .main-content .text-green-700,
+html.dark-mode .text-green-700 {
+    color: #047857 !important;
+    /* Tailwind green-700 */
+}
+
+html.dark-mode .main-content .text-blue-700,
+html.dark-mode .text-blue-700 {
+    color: #1d4ed8 !important;
+    /* Tailwind blue-700 */
+}
+
+
+/* Fix for alert text visibility in dark mode */
+html.dark-mode .main-content .text-red-700,
+html.dark-mode .text-red-700,
+html.dark-mode .main-content .text-red-700 span,
+html.dark-mode .main-content .text-red-700 strong {
+    color: #b91c1c !important;
+    /* Tailwind red-700 */
+}
+
+html.dark-mode .main-content .text-green-700,
+html.dark-mode .text-green-700,
+html.dark-mode .main-content .text-green-700 span,
+html.dark-mode .main-content .text-green-700 strong {
+    color: #047857 !important;
+    /* Tailwind green-700 */
+}
+
+html.dark-mode .main-content .text-blue-700,
+html.dark-mode .text-blue-700,
+html.dark-mode .main-content .text-blue-700 span,
+html.dark-mode .main-content .text-blue-700 strong {
+    color: #1d4ed8 !important;
+    /* Tailwind blue-700 */
+}
+
+
+html.dark-mode .notification-title {
+    color: #ffffff !important;
+}
+
+html.dark-mode .notification-message {
+    color: #ebebeb !important;
+}
+
+html.dark-mode .notification-time {
+    color: #ebebeb !important;
+}
+
+html.dark-mode .notification-card-cancelled.expanded p {
+    color: #ebebeb !important;
+}
+
+html.dark-mode .notification-card-cancelled {
+    background-color: rgb(184, 124, 124) !important;
+
+}
+
+html.dark-mode .logout-btn {
+    background: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .logout-btn:hover {
+    background: var(--bg-secondary) !important;
+    color: #ff6b6b !important;
+}
+
+/* Cancel Booking Popup */
+html.dark-mode .confirm-modal__card {
+    background: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode .confirm-modal__card h2 {
+    color: var(--text-primary) !important;
+}
+
+/* Review Page Fixes */
+html.dark-mode .main-content .info-label {
+    color: var(--text-muted) !important;
+}
+
+html.dark-mode .main-content .info-value,
+html.dark-mode .main-content .card-title,
+html.dark-mode .main-content .page-title,
+html.dark-mode .main-content .rating-title {
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode .main-content .stars-container {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .main-content .review-textarea {
+    background: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Ensure buttons maintain their styling */
+html.dark-mode .main-content button,
+html.dark-mode .main-content .btn,
+html.dark-mode .main-content .book-btn1,
+html.dark-mode .main-content .filter-btn {
+    /* Keep original button colors */
+    filter: none !important;
+}
+
+/* Homepage Specific Dark Mode */
+html.dark-mode body.homepage .activities .card,
+html.dark-mode body.homepage .why-choose .feature {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+}
+
+html.dark-mode body.homepage .activities .card *,
+html.dark-mode body.homepage .why-choose .feature * {
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode body.homepage .activities .card button {
+    color: white !important;
+}
+
+/* Homepage Reviews Section Dark Mode */
+html.dark-mode body.homepage .reviews .header,
+html.dark-mode body.homepage .reviews .review-container {
+    background: rgba(45, 45, 45, 0.9) !important;
+    /* Dark background with opacity */
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode body.homepage .reviews .header h2,
+html.dark-mode body.homepage .reviews .header p,
+html.dark-mode body.homepage .reviews .review-text,
+html.dark-mode body.homepage .reviews .author-info strong,
+html.dark-mode body.homepage .reviews .author-info span,
+html.dark-mode body.homepage .reviews .buttons {
+    color: white !important;
+}
+
+html.dark-mode body.homepage .reviews .buttons {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+html.dark-mode .btn-review {
+    color: #1971c2 !important;
+}
+
+html.dark-mode .btn-review:hover {
+    background-color: #1971c2 !important;
+    color: white !important;
+}
+
+html.dark-mode body.homepage .reviews .buttons:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Payment Page Specific Dark Mode */
+html.dark-mode .checkout-container,
+html.dark-mode .summary-section,
+html.dark-mode .payment-section {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+html.dark-mode .checkout-container input {
+    background-color: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark-mode .summary-section {
+    border: 1px solid var(--border-color);
+}
+
+html.dark-mode .payment-title {
+    color: white !important;
+}
+
+/* Activity Booking Page - Dark Mode Inputs */
+html.dark-mode .date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+html.dark-mode .date-input::-webkit-inner-spin-button {
+    filter: invert(1);
+}
+
+/* Force specific text colors for alerts in dark mode to ensure visibility against light backgrounds */
+html.dark-mode .main-content .text-red-700,
+html.dark-mode .text-red-700 {
+    color: #b91c1c !important;
+    /* Tailwind red-700 */
+}
+
+html.dark-mode .main-content .text-green-700,
+html.dark-mode .text-green-700 {
+    color: #047857 !important;
+    /* Tailwind green-700 */
+}
+
+html.dark-mode .main-content .text-blue-700,
+html.dark-mode .text-blue-700 {
+    color: #1d4ed8 !important;
+    /* Tailwind blue-700 */
+}
+
+
+/* Fix for alert text visibility in dark mode */
+html.dark-mode .main-content .text-red-700,
+html.dark-mode .text-red-700,
+html.dark-mode .main-content .text-red-700 span,
+html.dark-mode .main-content .text-red-700 strong {
+    color: #b91c1c !important;
+    /* Tailwind red-700 */
+}
+
+html.dark-mode .main-content .text-green-700,
+html.dark-mode .text-green-700,
+html.dark-mode .main-content .text-green-700 span,
+html.dark-mode .main-content .text-green-700 strong {
+    color: #047857 !important;
+    /* Tailwind green-700 */
+}
+
+html.dark-mode .main-content .text-blue-700,
+html.dark-mode .text-blue-700,
+html.dark-mode .main-content .text-blue-700 span,
+html.dark-mode .main-content .text-blue-700 strong {
+    color: #1d4ed8 !important;
+    /* Tailwind blue-700 */
+}
+
+
+html.dark-mode .notification-title {
+    color: #ffffff !important;
+}
+
+html.dark-mode .notification-message {
+    color: #ebebeb !important;
+}
+
+html.dark-mode .notification-time {
+    color: #ebebeb !important;
+}
+
+html.dark-mode .notification-card-cancelled.expanded p {
+    color: #ebebeb !important;
+}
+
+html.dark-mode .notification-card-cancelled {
+    background-color: rgb(184, 124, 124) !important;
+
+}
+
+html.dark-mode .notification-card {
+    background-color: rgb(146, 182, 131);
+
+}
+
+html.dark-mode .notification-card-completed {
+    background-color: rgb(124, 172, 184) !important;
+
+}
+
+html.dark-mode .review-link {
+    color: #ffffff !important;
+}
+
+html.dark-mode .icon-user {
+    background-image: url('../images/white-user-icon.png');
+}
+
+html.dark-mode .icon-calendar {
+    background-image: url('../images/white-calendar-icon.png');
+}
+
+html.dark-mode .icon-bell {
+    background-image: url('../images/white-bell-icon.png');
+}

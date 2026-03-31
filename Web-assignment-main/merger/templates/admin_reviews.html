@@ -1,0 +1,127 @@
+{% extends 'admin_sidebar.html' %}
+{% load static %}
+
+{% block title %}Customer Reviews - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_reviews.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Customer Reviews</h1>
+    <p class="page-subtitle">Read and manage customer feedback</p>
+</div>
+
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-label">Total Reviews</div>
+        <div class="stat-value">{{ total_reviews }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Average Rating</div>
+        <div class="stat-value">{{ average_rating }} / 5</div>
+    </div>
+</div>
+
+<!-- Filters -->
+<form method="get" action="" id="filterForm" onsubmit="return true;">
+<div class="filter-bar">
+    <div class="search-box">
+        <input type="text" name="search" id="searchInput" placeholder="Search by customer, activity or comment..." value="{{ current_search }}">
+    </div>
+
+    <div class="filter-dropdown">
+        <select class="dropdown-select" name="rating" id="ratingFilter" onchange="document.getElementById('filterForm').submit()">
+            <option value="all" {% if current_rating == 'all' %}selected{% endif %}>All Ratings</option>
+            <option value="5" {% if current_rating == '5' %}selected{% endif %}>5 Stars</option>
+            <option value="4" {% if current_rating == '4' %}selected{% endif %}>4 Stars</option>
+            <option value="3" {% if current_rating == '3' %}selected{% endif %}>3 Stars</option>
+            <option value="2" {% if current_rating == '2' %}selected{% endif %}>2 Stars</option>
+            <option value="1" {% if current_rating == '1' %}selected{% endif %}>1 Star</option>
+        </select>
+    </div>
+    <button type="submit" class="filter-submit-btn">Search</button>
+</div>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Activity</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="reviewsTable">
+            {% for review in reviews %}
+            <tr data-rating="{{ review.rating }}" style="--i: {{ forloop.counter }};">
+                <td class="customer-name">{{ review.customer.first_name }} {{ review.customer.last_name }}</td>
+                <td class="activity-name">{{ review.booking.activity.name }}</td>
+                <td class="rating-cell" style="white-space: pre;"> <span class="rating-star">★</span>{{ review.rating }}</td>
+                <td>
+                    <div class="comment-text">{{ review.comment }}</div>
+                </td>
+                <td class="date-cell">{{ review.created_at|date:"Y-m-d" }}</td>
+                <td>
+                    <form method="post" action="{% url 'delete_review' review.id %}" style="padding-left: 11px;"><button
+                            class="delete-btn" type="submit" title="Delete review">🗑️</button>{% csrf_token %}</form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align:center;">No Reviews found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if is_paginated %}
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page=1{% if current_rating != 'all' %}&rating={{ current_rating }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">First</a>
+    <a href="?page={{ page_obj.previous_page_number }}{% if current_rating != 'all' %}&rating={{ current_rating }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Previous</a>
+  {% endif %}
+
+  <span class="page-current">
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+  </span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if current_rating != 'all' %}&rating={{ current_rating }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Next</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}{% if current_rating != 'all' %}&rating={{ current_rating }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Last</a>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if messages %}
+<ul class="flash-messages">
+    {% for message in messages %}
+    <li class="flash-message {{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+<div class="dialog-overlay" id="dialogOverlay" onclick="closeDialog()">
+    <div class="dialog" onclick="event.stopPropagation()">
+        <h3 class="dialog-title">Delete Review</h3>
+        <p class="dialog-message">Are you sure you want to delete this review? This action cannot be undone.</p>
+        <div class="dialog-actions">
+            <button class="dialog-btn cancel" onclick="closeDialog()">No, Keep It</button>
+            <button class="dialog-btn confirm" onclick="confirmDelete()">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/admin_reviews.js' %}"></script>
+{% endblock %}

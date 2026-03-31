@@ -1,0 +1,100 @@
+{% extends 'base_homepage.html' %}
+{% load static %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/profile_booking.css' %}">
+<link rel="stylesheet" href="{% static 'css/notifications.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2><img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User Icon" class="user-icon"> User
+                Panel</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'profile' %}" class="nav-item {% if active_class == 'User Profile' %} active {% endif %}">
+                <span class="nav-icon icon-user"></span>
+                <span>User Profile</span>
+            </a>
+
+            <a href="{% url 'profile_booking' %}"
+                class="nav-item {% if active_class == 'Bookings' %} active {% endif %}">
+                <span class="nav-icon icon-calendar"></span>
+                <span>Bookings</span>
+            </a>
+
+            <a href="{% url 'notifications' %}"
+                class="nav-item {% if active_class == 'Notifications' %} active {% endif %}">
+                <span class="nav-icon icon-bell"></span>
+                <span>Notifications</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn">
+            <img src="{% static 'images/exit.png' %}" alt="Logout" class="logout-icon-img">
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <div class="profile-content">
+        <div class="header">
+            <h1>My Notifications</h1>
+        </div>
+
+        <div class="notification-section">
+            {% if notifications %}
+            {% for note in notifications %}
+            <div
+                class="notification-card {% if note.title == 'Booking Cancelled' %}notification-card-cancelled{% elif note.title == 'Booking Completed' %}notification-card-completed{% endif %}">
+                <div class="notification-header">
+                    <span class="notification-title">{{ note.title }}</span>
+                    <span class="notification-time">
+                        {{ note.created_at|timesince }} ago
+                    </span>
+                </div>
+
+                <p class="notification-message">
+                    {{ note.message_part|safe }}
+                </p>
+
+                {% if note.details_part %}
+                <div class="notification-details">
+                    {{ note.details_part|linebreaks }}
+                </div>
+
+                <button class="expand-btn">
+                    <img src="{% static 'images/arrow-down-icon.png' %}" alt="Expand" class="arrow-icon" width="16"
+                        height="16">
+                </button>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% else %}
+            <p style="padding:20px; color:#777;">You have no notifications.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div id="logoutModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Confirm Logout?</h3>
+        <div class="modal-buttons">
+            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" id="confirmLogout" class="modal-btn yes-btn">Yes</button>
+            </form>
+            <button id="cancelLogout" class="modal-btn no-btn">No</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/logout.js' %}"></script>
+<script src="{% static 'js/notifications.js' %}"></script>
+{% endblock %}

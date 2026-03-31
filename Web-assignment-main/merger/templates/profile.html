@@ -1,0 +1,304 @@
+{% extends 'base_homepage.html' %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/profile_booking.css' %}">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2><img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User Icon" class="user-icon"> User Panel
+      </h2>
+    </div>
+    <nav class="nav-menu">
+        <a href="{% url 'profile' %}" 
+          class="nav-item {% if active_class == 'User Profile' %} active {% endif %}">
+            <span class="nav-icon icon-user"></span>
+            <span>User Profile</span>
+        </a>
+
+        <a href="{% url 'profile_booking' %}" 
+          class="nav-item {% if active_class == 'Bookings' %} active {% endif %}">
+            <span class="nav-icon icon-calendar"></span>
+            <span>Bookings</span>
+        </a>
+
+        <a href="{% url 'notifications' %}" 
+          class="nav-item {% if active_class == 'Notifications' %} active {% endif %}">
+            <span class="nav-icon icon-bell"></span>
+            <span>Notifications</span>
+        </a>
+    </nav>
+
+    <button class="logout-btn">
+      <img src="{% static 'images/exit.png' %}" alt="Logout" class="logout-icon-img">
+      <span>Logout</span>
+    </button>
+  </aside>
+
+  <div class="profile-content">
+    <div class="header">
+      <h1>My Profile</h1>
+    </div>
+
+    <form id="profileForm" class="profile-section" method="POST" novalidate>
+      {% csrf_token %}
+      <div class="profile-top">
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User avatar" />
+        <div>
+          <h2 id="displayName">{{ user.first_name }} {{ user.last_name }}</h2>
+          <p id="displayEmail">{{ user.email }}</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label for="first_name">First Name</label>
+          <input id="first_name" name="first_name" type="text" value="{{ user.first_name }}" disabled required />
+        </div>
+        <div>
+          <label for="last_name">Last Name</label>
+          <input id="last_name" name="last_name" type="text" value="{{ user.last_name }}" disabled required />
+        </div>
+        <div>
+          <label for="uname">Username</label>
+          <input id="uname" name="uname" type="text" value="{{ user.username }}" disabled required />
+        </div>
+        <div>
+          <label for="phone">Telephone Number</label>
+          <input id="phone" name="phone" type="tel" value="{{ user.phone }}" disabled />
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" value="{{ user.email }}" disabled required />
+        </div>
+
+        <!-- NEW PASSWORD (appears in grid) -->
+        <div class="password-field hidden" id="newPwdDiv">
+          <label for="pwd">New Password</label>
+          <input id="pwd" name="pwd" type="password" placeholder="Enter new password">
+          <img src="{% static 'images/eye_icon.png' %}" id="togglePwd" class="toggle-password" />
+          <p id="pwdError" style="color: red; font-size: 14px; margin-top: 5px; display: none;">This field is required.
+          </p>
+        </div>
+
+        <!-- CONFIRM PASSWORD (appears in grid) -->
+        <div class="password-field hidden" id="confirmPwdDiv">
+          <label for="confirmPwd">Confirm New Password</label>
+          <input id="confirmPwd" name="confirmPwd" type="password" placeholder="Confirm new password">
+          <img src="{% static 'images/eye_icon.png' %}" id="toggleConfirmPwd" class="toggle-password" />
+          <p id="confirmPwdError" style="color: red; font-size: 14px; margin-top: 5px; display: none;">This field is
+            required.</p>
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button type="button" class="btn" id="editBtn">Edit</button>
+        <button type="button" class="btn hidden" id="changePwdBtn">Change Password</button>
+        <button type="submit" class="btn hidden" id="saveBtn">Save</button>
+      </div>
+
+      <!-- Hidden field to store current password -->
+      <input type="hidden" id="currentPwd" name="currentPwd">
+    </form>
+  </div>
+
+</div>
+
+<!-- CURRENT PASSWORD POPUP -->
+<div id="currentPwdModal" class="cpwd-modal-overlay hidden">
+  <div class="cpwd-modal-card">
+    <h3>Enter Password</h3>
+    <input type="password" id="cpwdInput" placeholder="Password">
+    <p id="incorrectPwdMsg" style="color: red; margin-top: 5px; display: none;">Incorrect password</p>
+    <div class="cpwd-btn-row">
+      <button id="cpwdCancel" class="modal-btn no-btn">Cancel</button>
+      <button id="cpwdSubmit" class="modal-btn yes-btn">Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- PASSWORD MISMATCH POPUP -->
+<div id="pwdMismatchModal" class="cpwd-modal-overlay hidden">
+  <div class="cpwd-modal-card">
+    <h3 class="modal-text">Passwords do not match</h3>
+    <button id="pwdMismatchOk" class="modal-btn yes-btn" style="margin-top: 15px;">OK</button>
+  </div>
+</div>
+
+<div id="logoutModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Confirm Logout?</h3>
+    <div class="modal-buttons">
+      <form method="post" action="{% url 'logout' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" id="confirmLogout" class="modal-btn yes-btn">Yes</button>
+      </form>
+      <button id="cancelLogout" class="modal-btn no-btn">No</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+<script src="{% static 'js/logout.js' %}"></script>
+
+<script>
+  // Declare ALL variables at the top
+  const editBtn = document.getElementById('editBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const inputs = document.querySelectorAll('#profileForm input');
+  const togglePwd = document.getElementById('togglePwd');
+  const toggleConfirmPwd = document.getElementById('toggleConfirmPwd');
+  const pwdInput = document.getElementById('pwd');
+  const confirmPwdInput = document.getElementById('confirmPwd');
+  const newPwdDiv = document.getElementById('newPwdDiv');
+  const confirmPwdDiv = document.getElementById('confirmPwdDiv');
+  const mismatchModal = document.getElementById('pwdMismatchModal');
+  const mismatchOk = document.getElementById('pwdMismatchOk');
+  const modal = document.getElementById('currentPwdModal');
+  const cpwdInput = document.getElementById('cpwdInput');
+  const cpwdSubmit = document.getElementById('cpwdSubmit');
+  const cpwdCancel = document.getElementById('cpwdCancel');
+  const incorrectPwdMsg = document.getElementById('incorrectPwdMsg');
+  const pwdError = document.getElementById('pwdError');
+  const confirmPwdError = document.getElementById('confirmPwdError');
+  const changePwdBtn = document.getElementById('changePwdBtn');
+
+  /* =========================== OPEN CURRENT PASSWORD POPUP =========================== */
+  editBtn.addEventListener('click', () => {
+    modal.classList.remove('hidden');
+  });
+
+  /* =========================== CANCEL POPUP =========================== */
+  cpwdCancel.addEventListener('click', () => {
+    cpwdInput.value = "";
+    incorrectPwdMsg.style.display = "none";
+    modal.classList.add('hidden');
+  });
+
+  /* =========================== SUBMIT CURRENT PASSWORD =========================== */
+  cpwdSubmit.addEventListener('click', async () => {
+    const val = cpwdInput.value.trim();
+    if (val === "") {
+      alert("Please enter your password.");
+      return;
+    }
+
+    // Verify password with backend
+    try {
+      const formData = new FormData();
+      formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+      formData.append('verify_password', val);
+
+      const response = await fetch(window.location.href, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.password_valid) {
+        // Password is correct, enable edit mode
+        document.getElementById('currentPwd').value = val;
+
+        // Enable inputs
+        inputs.forEach(i => i.disabled = false);
+
+        // Show change password button
+        changePwdBtn.classList.remove('hidden');
+
+        editBtn.classList.add('hidden');
+        saveBtn.classList.remove('hidden');
+
+        cpwdInput.value = "";
+        incorrectPwdMsg.style.display = "none";
+        modal.classList.add('hidden');
+      } else {
+        // Password is incorrect
+        incorrectPwdMsg.style.display = "block";
+      }
+    } catch (error) {
+      console.error('Error verifying password:', error);
+      alert('An error occurred. Please try again.');
+    }
+  });
+
+  /* =========================== TOGGLE PASSWORD VISIBILITY =========================== */
+  togglePwd.addEventListener('click', () => {
+    pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
+  });
+
+  toggleConfirmPwd.addEventListener('click', () => {
+    confirmPwdInput.type = confirmPwdInput.type === 'password' ? 'text' : 'password';
+  });
+
+  /* =========================== SHOW PASSWORD FIELDS WHEN CHANGE PASSWORD CLICKED =========================== */
+  changePwdBtn.addEventListener('click', () => {
+    changePwdBtn.classList.add('hidden');
+    newPwdDiv.classList.remove('hidden');
+    confirmPwdDiv.classList.remove('hidden');
+  });
+
+  /* =========================== CLOSE MISMATCH POPUP =========================== */
+  mismatchOk.addEventListener('click', () => {
+    mismatchModal.classList.add('hidden');
+  });
+
+  /* =========================== FORM VALIDATION =========================== */
+  document.getElementById('profileForm').addEventListener('submit', (e) => {
+    const password = pwdInput.value.trim();
+    const confirmPassword = confirmPwdInput.value.trim();
+
+    // Reset error messages
+    pwdError.style.display = "none";
+    confirmPwdError.style.display = "none";
+
+    // Only validate passwords if the password fields are visible
+    if (!newPwdDiv.classList.contains('hidden')) {
+      let hasError = false;
+
+      // Check if password fields are empty
+      if (password === "") {
+        pwdError.style.display = "block";
+        hasError = true;
+      }
+
+      if (confirmPassword === "") {
+        confirmPwdError.style.display = "block";
+        hasError = true;
+      }
+
+      if (hasError) {
+        e.preventDefault();
+        return;
+      }
+
+      // Password length check
+      if (password.length < 8) {
+        e.preventDefault();
+        mismatchModal.querySelector(".modal-text").textContent = "Password must be at least 8 characters.";
+        mismatchModal.classList.remove("hidden");
+        return;
+      }
+
+      // Password mismatch
+      if (password !== confirmPassword) {
+        e.preventDefault();
+        mismatchModal.querySelector(".modal-text").textContent = "Passwords do not match.";
+        mismatchModal.classList.remove("hidden");
+        return;
+      }
+    }
+  });
+</script>
+
+{% endblock %}

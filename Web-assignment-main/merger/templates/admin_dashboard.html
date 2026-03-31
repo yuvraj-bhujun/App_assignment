@@ -1,0 +1,100 @@
+{% extends 'admin_sidebar.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Dashboard Overview</h1>
+    <p class="page-subtitle">Welcome to your admin dashboard</p>
+</div>
+
+<div class="stats-container dashboard-grid">
+    <div class="stat-card metric-card">
+        <div class="metric-header">
+            <span class="metric-title">Total Activities</span>
+            <span class="metric-icon">⚡</span>
+        </div>
+        <div class="metric-value">{{ total_activities }}</div>
+    </div>
+
+    <div class="stat-card metric-card">
+        <div class="metric-header">
+            <span class="metric-title">Total Bookings</span>
+            <span class="metric-icon">📅</span>
+        </div>
+        <div class="metric-value">{{ total_booking }}</div>
+        <div class="metric-desc">{{ confirmed_booking }} confirmed, {{ cancelled_booking }} cancelled</div>
+    </div>
+
+    <div class="stat-card metric-card">
+        <div class="metric-header">
+            <span class="metric-title">Registered Customers</span>
+            <span class="metric-icon">👥</span>
+        </div>
+        <div class="metric-value">{{ registered_customers }}</div>
+        <div class="metric-desc">Active user accounts</div>
+    </div>
+
+    <div class="stat-card metric-card">
+        <div class="metric-header">
+            <span class="metric-title">Total Revenue</span>
+            <span class="metric-icon">💰</span>
+        </div>
+        <div class="metric-value">{{ total_revenue }}</div>
+        <div class="metric-desc">From completed payments</div>
+    </div>
+
+    <div class="stat-card metric-card">
+        <div class="metric-header">
+            <span class="metric-title">Average Rating</span>
+            <span class="metric-icon">⭐</span>
+        </div>
+        <div class="metric-value">{{ average_rating }}</div>
+        <div class="metric-desc">From {{ total_reviews }} reviews</div>
+    </div>
+
+    <div class="stat-card metric-card">
+        <div class="metric-header">
+            <span class="metric-title">Total Payments</span>
+            <span class="metric-icon">📈</span>
+        </div>
+        <div class="metric-value">{{ total_paid }}</div>
+        <div class="metric-desc">{{ total_refunded }} refunded</div>
+    </div>
+</div>
+
+<!-- Recent Activity Sections -->
+<div class="section-grid">
+    <section class="section">
+        <h2 class="section-title">📌 Recent Bookings</h2>
+        {% for booking in bookings %}
+            <div class="activity-item">
+                <div class="activity-name">{{ booking.customer.first_name }} {{ booking.customer.last_name }}</div>
+                <div class="activity-type">{{ booking.activity.name }}</div>
+                <div class="activity-meta">
+                    <span class="activity-date">{{ booking.created_at }}</span>
+                    <span class="status-badge status-confirmed">{{ booking.status }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">⭐ Recent Reviews</h2>
+        {% for review in reviews %}
+            <div class="review-item">
+                <div class="review-header">
+                    <div class="review-name">{{ review.customer.first_name }} {{ review.customer.last_name }}</div>
+                    <div class="review-rating">★ {{ review.rating }}</div>
+                </div>
+                <div class="review-text">{{ review.comment }}</div>
+            </div>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

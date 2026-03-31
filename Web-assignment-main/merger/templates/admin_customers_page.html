@@ -1,0 +1,132 @@
+{% extends 'admin_sidebar.html' %}
+{% load static %}
+
+{% block title %}Admin Customers Page{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_customers_page.css' %}">
+{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <h1 class="page-title">Customers</h1>
+  <p class="page-subtitle">View and manage registered customer profiles</p>
+</header>
+
+<!-- Filters -->
+<form method="get" action="" id="filterForm" onsubmit="return true;">
+<div class="filter-bar">
+  <div class="search-box">
+    <input type="text" name="search" id="searchInput" placeholder="Search by name, email or phone..." value="{{ current_search }}">
+  </div>
+  <button type="submit" class="filter-submit-btn">Search</button>
+</div>
+</form>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Email</th><th>Phone</th>
+        <th>Registered Date</th><th>Total Bookings</th><th>Total Spent</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for customer in customers %}
+      <tr style="--i: {{ forloop.counter }};">
+        <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+        <td>{{ customer.email }}</td>
+        <td>{{ customer.phone }}</td>
+        <td style="white-space: pre;">  {{ customer.date_joined|date:"M d, Y" }}</td>
+        <td><span class="stat-badge" style="white-space: pre;">           {{ customer.total_bookings }}</span></td>
+        <td>Rs {{ customer.total_spent }}</td>
+        <td class="action-cell">
+          <button class="view-btn"
+            data-id="{{ customer.id }}"
+            data-email="{{ customer.email }}"
+            data-phone="{{ customer.phone }}"
+            data-bookings="{{ customer.total_bookings }}"
+            data-spent="{{ customer.total_spent }}"
+            data-registered="{{ customer.date_joined|date:'Y-m-d\\TH:i:s' }}">
+            <img src="{% static 'images/eye_icon.png' %}" alt="View Profile" class="eye-icon">
+            <span>View Profile</span>
+          </button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" style="text-align:center;">No customers found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if is_paginated %}
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page=1{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">First</a>
+    <a href="?page={{ page_obj.previous_page_number }}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Previous</a>
+  {% endif %}
+
+  <span class="page-current">
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+  </span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Next</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Last</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block modal %}
+<!-- Enhanced Customer Profile Modal -->
+<div id="customerModalOverlay" class="modal-overlay fancy-modal" style="display:none;">
+  <div class="modal-card">
+      <button class="modal-close" aria-label="Close">&times;</button>
+
+      <div class="modal-banner"></div>
+
+      <div class="modal-avatar-wrapper">
+          <div class="modal-avatar"><img src="{% static 'images/profile_icon.png' %}" style="padding-left: 22px; height: 85px; padding-top: 6px;" ></div>
+      </div>
+
+      <h2 class="modal-name" id="customerName">Name</h2>
+      <p class="modal-subtitle">Customer Profile</p>
+
+      <div class="modal-grid">
+          <div class="modal-item">
+              <span class="label">Email</span>
+              <span class="value" id="customerEmail"></span>
+          </div>
+
+          <div class="modal-item">
+              <span class="label">Phone</span>
+              <span class="value" id="customerPhone"></span>
+          </div>
+
+          <div class="modal-item">
+              <span class="label">Member Since</span>
+              <span class="value" id="memberSince"></span>
+          </div>
+
+          <div class="modal-item">
+              <span class="label">Total Bookings</span>
+              <span class="value" id="totalBookings"></span>
+          </div>
+
+          <div class="modal-item">
+              <span class="label">Total Spent</span>
+              <span class="value" id="totalSpent"></span>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/admin_customers.js' %}"></script>
+{% endblock %}

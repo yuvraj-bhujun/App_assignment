@@ -1,0 +1,37 @@
+{% extends "base_homepage.html" %} {% load static %} {% block title %}About Us -
+Grand Blue{% endblock %}
+{% block body_class %}about-us{% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/about_us.css' %}" />
+{% endblock %} {% block content %}
+<!-- Hero background image -->
+<div class="hero"></div>
+
+<!-- About Us Section -->
+<section class="about-section">
+  <h2>ABOUT US</h2>
+  <p>
+    <strong>Grand Blue</strong> was born from a deep love for the ocean and a
+    dream to share the hidden wonders of Mauritius with the world. What started
+    as a small team of ocean enthusiasts grew into a trusted company, welcoming
+    adventurers, families, and explorers from all over the globe.
+  </p>
+
+  <p>
+    From our very first boat trip, our goal has always been the same: to create
+    meaningful memories at sea. Whether it's the thrill of a first scuba dive,
+    the serenity of a catamaran cruise, or the joy of spotting dolphins in their
+    natural home, we've dedicated ourselves to making every journey
+    unforgettable.
+  </p>
+
+  <p>
+    Over the years, we've built a reputation for combining safety, hospitality,
+    and adventure. With a passionate crew, certified instructors, and a strong
+    respect for the marine environment, Grand Blue continues to bring people
+    closer to the ocean.
+  </p>
+
+  <p class="tagline">—<br />One Adventure At A Time.</p>
+</section>
+{% endblock %}

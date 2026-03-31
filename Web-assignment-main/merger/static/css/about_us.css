@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+}
+
+.hero {
+  background: url("../images/about.jpeg") no-repeat center center/cover;
+  height: 550px;
+  width: 100%;
+}
+
+.about-section {
+  background: linear-gradient(to bottom, #188672dd, #052e4c);
+  text-align: center;
+  height: 750px;
+  padding: 50px 20px;
+}
+
+.about-section h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.about-section p {
+  width: 45%;
+  line-height: 1.6;
+  margin: 20px auto;
+  font-size: 1.1rem;
+  color: #000000;
+}
+
+.about-section .tagline {
+  font-style: italic;
+  margin-top: 40px;
+  font-weight: bold;
+}
+
+/* Ensure headers buttons are consistent */
+.book-btn,
+.login-link,
+.signup-link {
+  text-decoration: none !important;
+}
+
+.book-btn:hover,
+.login-link:hover,
+.signup-link:hover {
+  text-decoration: none !important;
+}

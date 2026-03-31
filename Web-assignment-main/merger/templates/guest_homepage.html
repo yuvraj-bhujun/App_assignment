@@ -1,0 +1,224 @@
+{% extends "base_homepage.html" %} {% load static %} {% block title %}Grand Blue
+Mauritius{% endblock %}
+{% block body_class %}homepage{% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/homepage.css' %}" />
+{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section class="hero">
+  <div class="overlay">
+    <h1>Grand Blue Mauritius</h1>
+    <p>Above & Below Sea Level</p>
+  </div>
+</section>
+
+<!-- Featured Activities -->
+<section class="activities">
+  <h2>Our Featured Sea Activities</h2>
+  <p class="subtitle">
+    Whether you seek adventure, relaxation, or family fun, there's something for
+    everyone to enjoy on the water.
+  </p>
+
+  <div class="cards">
+    <div class="card">
+      <picture>
+        <source srcset="{% static 'images/catamaran.webp' %}" type="image/webp">
+        <img src="{% static 'images/catamaran.jpg' %}" alt="Catamaran" loading="lazy" decoding="async" />
+      </picture>
+      <div class="card-content">
+        <div class="card-header">
+          <h3>Catamaran</h3>
+          <div class="card-rating"><img src="{% static 'images/star-filled.png' %}" alt="Star"
+              style="width: 16px; height: 20px; vertical-align: middle;"> {{ catamaran_avg }} ({{catamaran_tot }})
+          </div>
+        </div>
+        <p class="card-description">
+          Embark on a luxurious catamaran journey, where comfort meets
+          adventure.
+        </p>
+        <a href="{% url 'activity_list' %}#catamaran">
+          <button type="button">BOOK NOW</button>
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <picture>
+        <source srcset="{% static 'images/scuba_diving.webp' %}" type="image/webp">
+        <img src="{% static 'images/scuba_diving.jpg' %}" alt="Scuba Diving" loading="lazy" decoding="async" />
+      </picture>
+      <div class="card-content">
+        <div class="card-header">
+          <h3>Scuba Diving</h3>
+          <div class="card-rating"><img src="{% static 'images/star-filled.png' %}" alt="Star"
+              style="width: 16px; height: 20px; vertical-align: middle;"> {{ scuba_avg }} ({{ scuba_tot }})</div>
+        </div>
+        <p class="card-description">
+          Explore the underwater world with professional guidance and
+          safety-first equipment.
+        </p>
+        <a href="{% url 'activity_list' %}#scuba-diving">
+          <button type="button">BOOK NOW</button>
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <picture>
+        <source srcset="{% static 'images/dolphin_watching.webp' %}" type="image/webp">
+        <img src="{% static 'images/dolphin_watching.jpg' %}" alt="Dolphin Watching" loading="lazy" decoding="async" />
+      </picture>
+      <div class="card-content">
+        <div class="card-header">
+          <h3>Dolphin Watching</h3>
+          <div class="card-rating"><img src="{% static 'images/star-filled.png' %}" alt="Star"
+              style="width: 16px; height: 20px; vertical-align: middle;"> {{ dolphin_avg }} ({{ dolphin_tot }})</div>
+        </div>
+        <p class="card-description">
+          Experience the magic of dolphins swimming beside you on this
+          unforgettable adventure.
+        </p>
+        <a href="{% url 'activity_list' %}#dolphin-watching">
+          <button type="button">BOOK NOW</button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards bottom-row">
+    <div class="card">
+      <picture>
+        <source srcset="{% static 'images/water_skiing.webp' %}" type="image/webp">
+        <img src="{% static 'images/water_skiing.jpg' %}" alt="Water Skiing" loading="lazy" decoding="async" />
+      </picture>
+      <div class="card-content">
+        <div class="card-header">
+          <h3>Water Skiing</h3>
+          <div class="card-rating"><img src="{% static 'images/star-filled.png' %}" alt="Star"
+              style="width: 16px; height: 20px; vertical-align: middle;"> {{ ski_avg }} ({{ ski_tot }})</div>
+        </div>
+        <p class="card-description">
+          Experience the adrenaline rush while gliding across turquoise waters.
+        </p>
+        <a href="{% url 'activity_list' %}#water-ski">
+          <button type="button">BOOK NOW</button>
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <picture>
+        <source srcset="{% static 'images/speed_boating.webp' %}" type="image/webp">
+        <img src="{% static 'images/speed_boating.jpg' %}" alt="Speed Boating" loading="lazy" decoding="async" />
+      </picture>
+      <div class="card-content">
+        <div class="card-header">
+          <h3>Speed Boating</h3>
+          <div class="card-rating"><img src="{% static 'images/star-filled.png' %}" alt="Star"
+              style="width: 16px; height: 20px; vertical-align: middle;"> {{ boat_avg }} ({{ boat_tot }})</div>
+        </div>
+        <p class="card-description">
+          Feel the thrill of speed and freedom as you explore Mauritius'
+          coastline.
+        </p>
+        <a href="{% url 'activity_list' %}#speed-boat">
+          <button type="button">BOOK NOW</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Why Choose Section -->
+<section class="why-choose">
+  <h2>Why choose Grand Blue?</h2>
+  <div class="features">
+    <div class="feature">
+      <h3>Expert Instructions</h3>
+      <p>
+        Our qualified experts bring years of hands-on experience and a genuine
+        passion for teaching others about the ocean.
+      </p>
+    </div>
+    <div class="feature">
+      <h3>Safety Guaranteed</h3>
+      <p>
+        We uphold top-tier safety protocols through frequent equipment checks
+        and thorough safety instructions.
+      </p>
+    </div>
+    <div class="feature">
+      <h3>Personalized Service</h3>
+      <p>
+        By keeping group sizes small, we provide customized attention and
+        experiences suited to all skill levels.
+      </p>
+    </div>
+    <div class="feature">
+      <h3>Eco-Friendly</h3>
+      <p>
+        We actively support marine conservation and encourage eco-friendly
+        practices for a sustainable ocean.
+      </p>
+    </div>
+    <div class="feature">
+      <h3>Flexible Scheduling</h3>
+      <p>
+        With several daily trips and adaptable booking options, we make it easy
+        to match your travel plans.
+      </p>
+    </div>
+    <div class="feature">
+      <h3>Best Value</h3>
+      <p>
+        We offer transparent, affordable rates with no extra charges—everything
+        you need is included in our packages.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Reviews Section -->
+<section class="reviews">
+  <div class="header">
+    <h2>What our customers have to say..</h2>
+    <p>
+      Don't just take our word for it. Here's what our satisfied customers have
+      to say about their Grand Blue experiences.
+    </p>
+  </div>
+
+  <div class="review-container">
+    <button class="buttons prev" onclick="prevReview()">&#8592;</button>
+    <button class="buttons next" onclick="nextReview()">&#8594;</button>
+    <div id="review-content" class="review-content"></div>
+    <div class="dots-container" id="dots"></div>
+  </div>
+</section>
+
+<!-- Scroll to Top Button -->
+<button id="scrollTopBtn" title="Go to top">&#8679;</button>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Sign In or Sign Up</h2>
+    <p>Please log in or create an account to book activities</p>
+    <div class="modal-buttons">
+      <a href="{% url 'login' %}" class="modal-btn login-btn">Log In</a>
+      <a href="{% url 'signup' %}" class="modal-btn signup-btn">Sign Up</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block js %}
+
+<script id="reviews-data"
+  type="application/json">[{% for review in reviews %}{"rating":{{ review.rating }},"text":"{{ review.comment|escapejs }}","author":"{{ review.customer.first_name|escapejs }} {{ review.customer.last_name|escapejs }}","activity":"{{ review.booking.activity.name|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}]</script>
+<script>window.reviewsData = JSON.parse(document.getElementById('reviews-data').textContent);</script>
+<script src="{% static 'js/homepage.js' %}"></script>
+<script src="{% static 'js/guest_homepage.js' %}"></script>
+{% endblock %}

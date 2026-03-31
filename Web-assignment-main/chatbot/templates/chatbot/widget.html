@@ -1,0 +1,37 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'chatbot/css/chatbot.css' %}">
+
+<div id="grandblue-chatbot" class="chatbot-container">
+    <!-- Chat Button -->
+    <button id="chatbot-toggle" class="chatbot-toggle">
+        <span class="icon">💬</span>
+        <span class="text">Help</span>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="chatbot-window" class="chatbot-window hidden">
+        <div class="chatbot-header">
+            <div class="header-info">
+                <h3>GrandBlue Bot 🐬</h3>
+                <span class="status">Online</span>
+            </div>
+            <button id="chatbot-close" class="close-btn">&times;</button>
+        </div>
+
+        <div id="chatbot-messages" class="chatbot-messages">
+            <div class="message assistant">
+                <div class="bubble">
+                    Hello! I'm GrandBlue Bot. 🌊<br>
+                    Ask me about our water sports, prices, or how to book!
+                </div>
+            </div>
+        </div>
+
+        <div class="chatbot-input">
+            <input type="text" id="chatbot-input-field" placeholder="Type a message...">
+            <button id="chatbot-send">➤</button>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'chatbot/js/chatbot.js' %}"></script>

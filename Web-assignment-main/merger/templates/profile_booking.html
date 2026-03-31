@@ -1,0 +1,181 @@
+{% extends 'base_homepage.html' %}
+
+{% block title %}My Bookings - User Panel{% endblock %}
+
+{% block extrahead %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/profile_booking.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2><img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="User Icon" class="user-icon"> User
+                Panel</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'profile' %}" 
+            class="nav-item {% if active_class == 'User Profile' %} active {% endif %}">
+                <span class="nav-icon icon-user"></span>
+                <span>User Profile</span>
+            </a>
+
+            <a href="{% url 'profile_booking' %}" 
+            class="nav-item {% if active_class == 'Bookings' %} active {% endif %}">
+                <span class="nav-icon icon-calendar"></span>
+                <span>Bookings</span>
+            </a>
+
+            <a href="{% url 'notifications' %}" 
+            class="nav-item {% if active_class == 'Notifications' %} active {% endif %}">
+                <span class="nav-icon icon-bell"></span>
+                <span>Notifications</span>
+            </a>
+        </nav>
+
+        <button class="logout-btn">
+            <img src="{% static 'images/exit.png' %}" alt="Logout" class="logout-icon-img">
+            <span>Logout</span>
+        </button>
+    </aside>
+
+    <div class="profile-content">
+        <div class="header">
+            <h1>My Bookings</h1>
+        </div>
+
+        <!-- CSRF Token for JavaScript -->
+        {% csrf_token %}
+
+        <!-- Filter Bar -->
+        <form method="get" action="" id="filterForm" onsubmit="return true;">
+        <div class="filter-bar">
+            <div class="search-box">
+                <input type="text" name="search" id="searchInput" placeholder="Search by activity or booking ID..." value="{{ current_search }}">
+            </div>
+
+            <div class="filter-dropdown">
+                <select class="dropdown-select" name="status" id="statusFilter" onchange="document.getElementById('filterForm').submit()">
+                    <option value="all" {% if current_status == 'all' %}selected{% endif %}>All Statuses</option>
+                    <option value="confirmed" {% if current_status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                    <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="cancelled" {% if current_status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+            </div>
+
+            <div class="filter-dropdown">
+                <select class="dropdown-select" name="activity" id="activityFilter" onchange="document.getElementById('filterForm').submit()">
+                    <option value="all" {% if current_activity == 'all' %}selected{% endif %}>All Activities</option>
+                    <option value="Catamaran" {% if current_activity == 'Catamaran' %}selected{% endif %}>Catamaran</option>
+                    <option value="Scuba diving" {% if current_activity == 'Scuba diving' %}selected{% endif %}>Scuba diving</option>
+                    <option value="Dolphin watching" {% if current_activity == 'Dolphin watching' %}selected{% endif %}>Dolphin watching</option>
+                    <option value="Water ski" {% if current_activity == 'Water ski' %}selected{% endif %}>Water ski</option>
+                    <option value="Speed boat" {% if current_activity == 'Speed boat' %}selected{% endif %}>Speed boat</option>
+                </select>
+            </div>
+            <button type="submit" class="filter-submit-btn">Search</button>
+        </div>
+        </form>
+
+        <div class="bookings-container">
+            <!-- Confirm Cancel Modal -->
+            <div id="confirmModal" class="confirm-modal" aria-hidden="true">
+                <div class="confirm-modal__overlay" data-close></div>
+                <div class="confirm-modal__card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+                    <h2 id="confirmTitle">Confirm Cancel Booking?</h2>
+                    <div class="confirm-modal__actions">
+                        <button id="confirmYes" class="action-btn btn-confirm">Yes</button>
+                        <button id="confirmNo" class="action-btn"
+                            style="background:#fff; border:1px solid #e0e0e0; color:#333;">No</button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="bookings-table">
+                <thead>
+                    <tr>
+                        <th>ACTIVITY NAME</th>
+                        <th style="display: none;">BOOKING ID</th>
+                        <th>DATE OF ACTIVITY</th>
+                        <th class="col-status">STATUS</th>
+                        <th class="col-edit">EDIT</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    {% for booking in bookings %}
+                    <tr data-status="{{ booking.status|lower }}" data-activity="{{ booking.activity.activity_type }}">
+                        <td class="activity-name">{{ booking.activity.name }}</td>
+                        <td class="booking-id" style="display: none;">B_{{ booking.id }}</td>
+                        <td>{{ booking.date }}</td>
+                        <td>
+                            {% if booking.status == 'CONFIRMED' %}
+                            <span class="status-badge status-confirmed">Confirmed</span>
+                            {% elif booking.status == 'COMPLETED' %}
+                            <span class="status-badge status-completed">Completed</span>
+                            {% elif booking.status == 'CANCELLED' %}
+                            <span class="status-badge status-cancelled">Cancelled</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if booking.status == 'CONFIRMED' %}
+                            <button class="action-btn btn-cancel">Cancel</button>
+                            {% elif booking.status == 'COMPLETED' %}
+                            <a href="{% url 'review' booking.id %}" class="action-btn btn-review">Review</a>
+                            {% else %}
+                            <span class="no-action">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align:center;">You have no bookings yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            {% if bookings.has_other_pages %}
+            <div class="pagination">
+                {% if bookings.has_previous %}
+                    <a href="?page=1{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_activity != 'all' %}&activity={{ current_activity }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">&laquo; First</a>
+                    <a href="?page={{ bookings.previous_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_activity != 'all' %}&activity={{ current_activity }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Previous</a>
+                {% endif %}
+
+                {% for num in bookings.paginator.page_range %}
+                    {% if bookings.number == num %}
+                        <span class="page-link active">{{ num }}</span>
+                    {% elif num > bookings.number|add:'-3' and num < bookings.number|add:'3' %}
+                        <a href="?page={{ num }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_activity != 'all' %}&activity={{ current_activity }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if bookings.has_next %}
+                    <a href="?page={{ bookings.next_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_activity != 'all' %}&activity={{ current_activity }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Next</a>
+                    <a href="?page={{ bookings.paginator.num_pages }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_activity != 'all' %}&activity={{ current_activity }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Last &raquo;</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div id="logoutModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Confirm Logout?</h3>
+        <div class="modal-buttons">
+            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" id="confirmLogout" class="modal-btn yes-btn">Yes</button>
+            </form>
+            <button id="cancelLogout" class="modal-btn no-btn">No</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/profile_booking.js' %}"></script>
+<script src="{% static 'js/logout.js' %}"></script>
+{% endblock %}

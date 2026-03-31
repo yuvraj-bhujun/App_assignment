@@ -1,0 +1,107 @@
+{% extends 'admin_sidebar.html' %}
+{% load static %}
+{% block title %}
+    Payment Transactions - Admin Panel
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/admin_payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Payment Transactions</h1>
+    <p class="page-subtitle">Track and manage all payment transactions</p>
+</div>
+
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value">{{ total_revenue }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Total Transactions</div>
+        <div class="stat-value">{{ total_transactions }}</div>
+    </div>
+    <button class="generate-btn" onclick="generateReport()">
+        <span>Generate report</span>
+    </button>
+</div>
+
+<form method="get" action="" id="filterForm" onsubmit="return true;">
+<div class="filter-bar">
+    <div class="search-box">
+        <input type="text" name="search" id="searchInput" placeholder="Search by customer name..." value="{{ current_search }}">
+    </div>
+
+    <div class="filter-dropdown">
+        <select class="dropdown-select" name="status" id="statusFilter" onchange="document.getElementById('filterForm').submit()">
+            <option value="all" {% if current_status == 'all' %}selected{% endif %}>All Statuses</option>
+            <option value="paid" {% if current_status == 'paid' %}selected{% endif %}>Paid</option>
+            <option value="refunded" {% if current_status == 'refunded' %}selected{% endif %}>Refunded</option>
+        </select>
+    </div>
+    <button type="submit" class="filter-submit-btn">Search</button>
+</div>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody id="transactionsTable">
+            {% for payment in payments %}
+                <tr data-status="{{ payment.status|lower }}" style="--i: {{ forloop.counter }};">
+                    <td class="transaction-id" style="white-space: pre;">     T{{ payment.id }}</td>
+                    <td class="customer-name"><span class="customer-name">{{ payment.booking.customer.first_name }} {{ payment.booking.customer.last_name }}</span></td>
+                    <td class="amount" style="white-space: pre;">  {{ payment.amount }}</td>
+                    <td class="method" style="white-space: pre;">  {{ payment.method }}</td>
+                    <td><span class="status-badge 
+                                {% if payment.status == 'PAID' %}
+                                paid
+                                {% elif payment.status == 'REFUNDED' %}
+                                refunded
+                                {% endif %}
+                            ">
+                                {{ payment.get_status_display }}
+                            </span>
+                        </td>
+                    <td class="date"><span>{{ payment.paid_at|date:"Y-m-d" }}</span></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align:center;">No payments found.</td>
+                </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if is_paginated %}
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page=1{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">First</a>
+    <a href="?page={{ page_obj.previous_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Previous</a>
+  {% endif %}
+
+  <span class="page-current">
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+  </span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Next</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Last</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}{% block js %}
+    <script src="{% static 'js/admin_payment.js' %}"></script>
+{% endblock %}

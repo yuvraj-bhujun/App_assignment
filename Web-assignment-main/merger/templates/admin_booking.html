@@ -1,0 +1,157 @@
+{% extends 'admin_sidebar.html' %}
+{% load static %}
+{% block title %}
+Bookings Management - Admin Panel
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_booking.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Bookings Management</h1>
+    <p class="page-subtitle">View and manage customer bookings</p>
+</div>
+
+<form method="get" action="" id="filterForm" onsubmit="return true;">
+<div class="filter-bar">
+    <div class="search-box">
+        <input type="text" name="search" id="searchInput" placeholder="Search by name, email, or activity..." value="{{ current_search }}">
+    </div>
+
+    <div class="filter-dropdown">
+        <select class="dropdown-select" name="status" id="statusFilter" onchange="document.getElementById('filterForm').submit()">
+            <option value="all" {% if current_status == 'all' %}selected{% endif %}>All Status</option>
+            <option value="confirmed" {% if current_status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+            <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Completed</option>
+            <option value="cancelled" {% if current_status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+        </select>
+    </div>
+
+    <div class="filter-dropdown">
+        <select class="dropdown-select" name="activity" id="activityFilter" onchange="document.getElementById('filterForm').submit()">
+            <option value="all" {% if current_activity == 'all' %}selected{% endif %}>All Activities</option>
+            <option value="Catamaran" {% if current_activity == 'Catamaran' %}selected{% endif %}>Catamaran</option>
+            <option value="Scuba diving" {% if current_activity == 'Scuba diving' %}selected{% endif %}>Scuba diving</option>
+            <option value="Dolphin watching" {% if current_activity == 'Dolphin watching' %}selected{% endif %}>Dolphin watching</option>
+            <option value="Speed boat" {% if current_activity == 'Speed boat' %}selected{% endif %}>Speed boat</option>
+            <option value="Water ski" {% if current_activity == 'Water ski' %}selected{% endif %}>Water ski</option>
+        </select>
+    </div>
+    <button type="submit" class="filter-submit-btn">Search</button>
+</div>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Customer</th>
+                <th>Activity</th>
+                <th>Date & Time</th>
+                <th>Participants</th>
+                <th>Price</th>
+                <th style="white-space: pre;"> Status</th>
+                <th>Cancel</th>
+            </tr>
+        </thead>
+        <tbody id="bookingsTable">
+            {% for booking in bookings %}
+            <tr data-status="{{ booking.status|lower }}" data-activity="{{ booking.activity.activity_type }}"
+                data-booking-id="{{ booking.id }}"
+                style="--i: {{ forloop.counter }};">
+                <td class="booking-id" style="white-space: pre;"> B{{ booking.id }}</td>
+                <td>
+                    <div class="customer-info">
+                        <span class="customer-name">{{ booking.customer.first_name }} {{ booking.customer.last_name }}</span>
+                        <span class="customer-email">{{ booking.customer.email }}</span>
+                    </div>
+                </td>
+                <td class="activity-name">{{ booking.activity.name }}</td>
+                <td>
+                    <div class="datetime-info">
+                        <span class="date">{{ booking.date|date:"Y-m-d" }}</span>
+                        <span class="time">{{ booking.created_at|date:"H:i:s" }}</span>
+                    </div>
+                </td>
+                <td class="participants">{{ booking.group_size }}</td>
+                <td class="price">{{ booking.price_total }}</td>
+                <td>
+                    <span class="status-badge 
+                                {% if booking.status == 'CONFIRMED' %}
+                                confirmed
+                                {% elif booking.status == 'CANCELLED' %}
+                                cancelled
+                                {% elif booking.status == 'COMPLETED' %}
+                                completed
+                                {% endif %}
+                            ">
+                        {{ booking.get_status_display }}
+                    </span>
+                </td>
+                <td class="cancel-cell">
+                    {% if booking.status == 'CONFIRMED' %}
+                    <form method="POST" action="{% url 'cancel_booking' booking.id %}">
+                        {% csrf_token %}
+                        <button type="button" class="cancel-btn" title="Cancel Booking" onclick="showCancelDialog('{{ booking.id }}', this)">✕</button>
+                    </form>
+                    {% else %}
+                    <span style="color: #ccc;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align:center;">No Bookings found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if is_paginated %}
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page=1{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_activity != 'all' %}&activity={{ current_activity }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">First</a>
+    <a href="?page={{ page_obj.previous_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_activity != 'all' %}&activity={{ current_activity }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Previous</a>
+  {% endif %}
+
+  <span class="page-current">
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+  </span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_activity != 'all' %}&activity={{ current_activity }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Next</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}{% if current_status != 'all' %}&status={{ current_status }}{% endif %}{% if current_activity != 'all' %}&activity={{ current_activity }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Last</a>
+  {% endif %}
+</div>
+{% endif %}
+
+<!-- Confirmation Dialog -->
+<div class="dialog-overlay" id="dialogOverlay" onclick="closeDialog()">
+    <div class="dialog" onclick="event.stopPropagation()">
+        <h3 class="dialog-title">Cancel Booking</h3>
+        <p class="dialog-message">Are you sure you want to cancel booking <strong id="bookingIdText"></strong>? This
+            action cannot be undone.</p>
+        <div class="dialog-actions">
+            <button class="dialog-btn cancel" onclick="closeDialog()">No, Keep It</button>
+            <button class="dialog-btn confirm" onclick="confirmCancel()">Yes, Cancel It</button>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+  <ul class="flash-messages">
+    {% for message in messages %}
+      <li class="flash-message {{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/admin_booking.js' %}"></script>
+{% endblock %}

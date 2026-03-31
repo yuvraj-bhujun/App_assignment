@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin Panel{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/logout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dark_mode.css' %}">
+  {% block css %}
+  <link rel="stylesheet" href="{% static 'css/admin_sidebar.css' %}">
+  {% endblock css %}
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1>Admin Panel</h1>
+      <p>Activity Booking System</p>
+    </div>
+
+    <nav class="nav-menu">
+      <a href="{% url 'dashboard' %}" class="nav-item {% if active_class == 'dashboard' %} active {% endif %}">
+        <span class="nav-icon">
+          <img src="{% static 'images/dashboard_white.png' %}" alt="" class="icon-white">
+          <img src="{% static 'images/dashboard.png' %}" alt="" class="icon-dark">
+        </span>
+        &nbsp;&nbsp;Dashboard
+      </a>
+      <a href="{% url 'activities' %}" class="nav-item {% if active_class == 'activities' %} active {% endif %}">
+        <span class="nav-icon">
+          <img src="{% static 'images/activity_white.png' %}" alt="" class="icon-white">
+          <img src="{% static 'images/activity.png' %}" alt="" class="icon-dark">
+        </span>
+        &nbsp;&nbsp;Activities
+      </a>
+      <a href="{% url 'bookings' %}" class="nav-item {% if active_class == 'bookings' %} active {% endif %}">
+        <span class="nav-icon">
+          <img src="{% static 'images/booking_white.png' %}" alt="" class="icon-white">
+          <img src="{% static 'images/booking.png' %}" alt="" class="icon-dark">
+        </span>
+        &nbsp;&nbsp;Bookings
+      </a>
+      <a href="{% url 'customers_page' %}" class="nav-item {% if active_class == 'customers' %} active {% endif %}">
+        <span class="nav-icon">
+          <img src="{% static 'images/customer_white.png' %}" alt="" class="icon-white">
+          <img src="{% static 'images/customer.png' %}" alt="" class="icon-dark">
+        </span>
+        &nbsp;&nbsp;Customers
+      </a>
+      <a href="{% url 'payments' %}" class="nav-item {% if active_class == 'payments' %} active {% endif %}">
+        <span class="nav-icon">
+          <img src="{% static 'images/payment_white.png' %}" alt="" class="icon-white">
+          <img src="{% static 'images/payment.png' %}" alt="" class="icon-dark">
+        </span>
+        &nbsp;&nbsp;Payments
+      </a>
+      <a href="{% url 'reviews' %}" class="nav-item {% if active_class == 'reviews' %} active {% endif %}">
+        <span class="nav-icon">
+          <img src="{% static 'images/review_white.png' %}" alt="" class="icon-white">
+          <img src="{% static 'images/review.png' %}" alt="" class="icon-dark">
+        </span>
+        &nbsp;&nbsp;Reviews
+      </a>
+
+      <!-- Django Admin button -->
+      <a href="javascript:void(0)" class="nav-item" id="djangoAdminBtn" data-admin-url="/admin/">
+        <span class="nav-icon">
+          <img src="{% static 'images/dashboard_white.png' %}" alt="" class="icon-white">
+          <img src="{% static 'images/dashboard.png' %}" alt="" class="icon-dark">
+        </span>
+        &nbsp;&nbsp;Django admin
+      </a>
+    </nav>
+
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+      <button id="darkModeToggle" class="dark-mode-toggle">
+        <span id="darkModeIcon">
+          <!-- Moon icon (default - black for light mode) -->
+          <img id="icon-moon" src="{% static 'images/darkmoondarkmode.png' %}" alt="Dark Mode" width="24" height="24">
+          <!-- Sun icon (hidden by default - white for dark mode) -->
+          <img id="icon-sun" src="{% static 'images/whitesundarkmode.png' %}" alt="Light Mode" width="24" height="24"
+            style="display:none;">
+        </span>
+      </button>
+    </div>
+
+    <button class="logout-btn">
+      <span class="logout-icon">
+        <img src="{% static 'images/exit.png' %}" alt="Logout Icon">
+      </span>
+      Logout
+    </button>
+  </aside>
+
+  <div id="logoutModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Confirm Logout?</h3>
+      <div class="modal-buttons">
+        <form method="post" action="{% url 'logout' %}" style="display: inline;">
+          {% csrf_token %}
+          <button type="submit" id="confirmLogout" class="modal-btn yes-btn">Yes</button>
+        </form>
+        <button id="cancelLogout" class="modal-btn no-btn">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Django Admin confirmation modal -->
+  <div id="djangoAdminModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Do you want to go the django admin?</h3>
+      <div class="modal-buttons">
+        <button type="button" id="confirmDjangoAdmin" class="modal-btn yes-btn">Yes</button>
+        <button type="button" id="cancelDjangoAdmin" class="modal-btn no-btn">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block modal %}{% endblock %}
+
+  <script src="{% static 'js/logout.js' %}"></script>
+  <script src="{% static 'js/admin_sidebar.js' %}"></script>
+  <script src="{% static 'js/dark_mode.js' %}"></script>
+
+  {% block js %}{% endblock %}
+</body>
+
+</html>

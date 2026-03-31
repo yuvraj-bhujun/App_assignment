@@ -1,0 +1,85 @@
+{% extends 'base_homepage.html' %}
+{% load static %}
+{% block title %}Review - User Panel{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/review.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="review-container">
+    <a href="{% url 'profile_booking' %}" class="back-link">Back to My Booking</a>
+
+    <h1 class="page-title">{{ activity.name }}</h1>
+
+    <div class="content-wrapper">
+        <!-- Activity Information Card -->
+        <div class="card">
+            <h2 class="card-title">Activity Information</h2>
+            <div class="info-item">
+                <div class="info-content">
+                    <div class="info-label">Group size</div>
+                    <div class="info-value">{{ booking.group_size }}</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-content">
+                    <div class="info-label">Date booked</div>
+                    <div class="info-value">{{ booking.date }}</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-content">
+                    <div class="info-label">Bill</div>
+                    <div class="info-value">Rs {{ booking.price_total }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Section -->
+        <div class="card">
+            <h2 class="card-title">Add Review</h2>
+            <form id="reviewForm" method="post" action="{% url 'review' booking.id %}">
+                {% csrf_token %}
+                <div class="review-section">
+                    <div style="flex:1;">
+                        <textarea name="comment" class="review-textarea" placeholder="Type your review here..."
+                            id="reviewText">{% if existing_review %}{{ existing_review.comment }}{% endif %}</textarea>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 15px;">Save Review</button>
+                    </div>
+
+                    <div class="rating-section">
+                        <h3 class="rating-title">How many stars would you give?</h3>
+                        <input type="hidden" name="rating" id="ratingInput"
+                            value="{% if existing_review %}{{ existing_review.rating }}{% else %}0{% endif %}">
+                        <div class="stars-container">
+                            <div class="star" data-rating="1">
+                                <img src="{% static 'images/star-empty.png' %}" class="star-img" alt="Star 1" width="50"
+                                    height="50">
+                            </div>
+                            <div class="star" data-rating="2">
+                                <img src="{% static 'images/star-empty.png' %}" class="star-img" alt="Star 2" width="50"
+                                    height="50">
+                            </div>
+                            <div class="star" data-rating="3">
+                                <img src="{% static 'images/star-empty.png' %}" class="star-img" alt="Star 3" width="50"
+                                    height="50">
+                            </div>
+                            <div class="star" data-rating="4">
+                                <img src="{% static 'images/star-empty.png' %}" class="star-img" alt="Star 4" width="50"
+                                    height="50">
+                            </div>
+                            <div class="star" data-rating="5">
+                                <img src="{% static 'images/star-empty.png' %}" class="star-img" alt="Star 5" width="50"
+                                    height="50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/review.js' %}"></script>
+{% endblock %}

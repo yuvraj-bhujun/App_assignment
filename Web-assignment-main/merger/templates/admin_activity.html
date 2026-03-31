@@ -1,0 +1,417 @@
+{% extends 'admin_sidebar.html' %}
+{% load static %}
+
+{% block title %}Activities Management{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_activity.css' %}">
+{% endblock %}
+
+{% block content %}
+<header class="content-header">
+  <div class="header-left">
+    <div class="header-text">
+      <h2>Activities Management</h2>
+      <p>Add, edit, and manage available activities</p>
+    </div>
+  </div>
+  <button class="add-activity-btn">+ Add Activity</button>
+</header>
+
+<!-- Filters -->
+<form method="get" action="" id="filterForm" onsubmit="return true;">
+<div class="filter-bar">
+  <div class="search-box">
+    <input type="text" name="search" id="searchInput" placeholder="Search by name, location or description..." value="{{ current_search }}">
+  </div>
+
+  <div class="filter-dropdown">
+    <select class="dropdown-select" name="activity_type" id="activityTypeFilter" onchange="document.getElementById('filterForm').submit()">
+      <option value="all" {% if current_activity_type == 'all' %}selected{% endif %}>All Activity Types</option>
+      <option value="Catamaran" {% if current_activity_type == 'Catamaran' %}selected{% endif %}>Catamaran</option>
+      <option value="Scuba diving" {% if current_activity_type == 'Scuba diving' %}selected{% endif %}>Scuba diving</option>
+      <option value="Dolphin watching" {% if current_activity_type == 'Dolphin watching' %}selected{% endif %}>Dolphin watching</option>
+      <option value="Water ski" {% if current_activity_type == 'Water ski' %}selected{% endif %}>Water ski</option>
+      <option value="Speed boat" {% if current_activity_type == 'Speed boat' %}selected{% endif %}>Speed boat</option>
+    </select>
+  </div>
+  <button type="submit" class="filter-submit-btn">Search</button>
+</div>
+</form>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Activity Name</th>
+        <th>Activity Type</th>
+        <th>Price per pax</th>
+        <th>Location</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for activity in activities %}
+        <tr
+          data-activity-id="{{ activity.id }}"
+          data-activity-name="{{ activity.name }}"
+          data-activity-type="{{ activity.activity_type }}"
+          data-activity-location="{{ activity.location }}"
+          data-activity-description="{{ activity.description }}"
+          data-activity-price="{{ activity.base_price }}"
+          data-activity-duration="{{ activity.duration }}"
+          data-activity-max-participants="{{ activity.max_participants }}"
+
+          data-activity-rules="{{ activity.activity_rules|default_if_none:'' }}"
+          data-activity-safety="{{ activity.safety_equipment|default_if_none:'' }}"
+          data-activity-cancel="{{ activity.cancellation_policy|default_if_none:'' }}"
+          data-activity-map-url="{{ activity.map_embed_url|default_if_none:'' }}"
+          data-activity-map-desc="{{ activity.map_location_description|default_if_none:''|escapejs }}"
+
+          data-activity-highlights='[
+            {% for h in activity.highlights.all %}
+              {"id":"{{ h.id }}","title":"{{ h.icon_title|escapejs }}","description":"{{ h.icon_description|escapejs }}","image":"{{ h.icon_image.url|default:'' }}"}
+              {% if not forloop.last %},{% endif %}
+            {% endfor %}
+          ]'
+
+          data-activity-images='[
+            {% for img in activity.images.all %}
+              {"id":"{{ img.id }}","url":"{{ img.image.url }}"}
+              {% if not forloop.last %},{% endif %}
+            {% endfor %}
+          ]'
+
+          style="--i: {{ forloop.counter }};"
+        >
+          <td class="activity-name">{{ activity.name }}</td>
+          <td class="activity-type">{{ activity.activity_type }}</td>
+          <td class="activity-price">Rs {{ activity.base_price }}</td>
+          <td class="activity-location">{{ activity.location }}</td>
+          <td>
+            <div class="action-icons">
+              <button type="button" class="action-btn edit-btn" title="Edit">
+                <img src="{% static 'images/edit.png' %}" alt="Edit">
+              </button>
+
+              <form method="POST"
+                    action="{% url 'delete_activity' activity.id %}"
+                    class="delete-form"
+                    style="display:inline;">
+                {% csrf_token %}
+                <button type="button" class="action-btn delete-btn" title="Delete">
+                  <img src="{% static 'images/delete.png' %}" alt="Delete">
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center;">No activities found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if is_paginated %}
+<div class="pagination">
+  {% if page_obj.has_previous %}
+    <a href="?page=1{% if current_activity_type != 'all' %}&activity_type={{ current_activity_type }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">First</a>
+    <a href="?page={{ page_obj.previous_page_number }}{% if current_activity_type != 'all' %}&activity_type={{ current_activity_type }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Previous</a>
+  {% endif %}
+
+  <span class="page-current">
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+  </span>
+
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if current_activity_type != 'all' %}&activity_type={{ current_activity_type }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Next</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}{% if current_activity_type != 'all' %}&activity_type={{ current_activity_type }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" class="page-link">Last</a>
+  {% endif %}
+</div>
+{% endif %}
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+  <div class="modal-content small">
+    <h3>Confirm Deletion</h3>
+    <p id="modalMessage"></p>
+    <div class="form-actions center">
+      <button class="cancel-btn">Cancel</button>
+      <button class="create-btn danger">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Activity Modal -->
+<div id="addActivityModal" class="modal">
+  <div class="modal-content scrollable">
+    <div class="modal-header">
+      <h3>Create New Activity</h3>
+      <button type="button" class="close-modal" aria-label="Close">&times;</button>
+    </div>
+    <p>Fill in the details to create a new activity.</p>
+
+    <div class="modal-body">
+      <form class="activity-form"
+            id="addActivityForm"
+            enctype="multipart/form-data"
+            method="post"
+            action="{% url 'add_activity' %}">
+        {% csrf_token %}
+        <input type="hidden" name="activity_id" value="0">
+        <div class="form-section">
+          <h4>Basic Information</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Activity Name *</label>
+              <input type="text" name="name" placeholder="e.g., Scuba Diving Photo Dive" required />
+            </div>
+            <div class="form-group">
+              <label>Activity Type</label>
+              <select name="activity_type" id="addActivityType">
+                <option value="Scuba diving">Scuba diving</option>
+                <option value="Catamaran">Catamaran</option>
+                <option value="Speed boat">Speed boat</option>
+                <option value="Water ski">Water ski</option>
+                <option value="Dolphin watching">Dolphin watching</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <input type="text" name="location" placeholder="e.g., Grand Baie" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Description *</label>
+            <textarea name="description" rows="4" placeholder="Describe the activity..." required></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Price (Rs) *</label>
+              <input type="number" name="price" value="0" min="0" step="1" required />
+            </div>
+            <div class="form-group">
+              <label>Duration</label>
+              <input type="text" name="duration" placeholder="e.g., 2 hours" />
+            </div>
+            <div class="form-group">
+              <label>Max Participants</label>
+              <input type="number" name="max_participants" value="1" min="1" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Activity Details</h4>
+          <div class="form-group">
+            <label>Activity Rules (one per line)</label>
+            <textarea name="activity_rules" rows="7" placeholder="Check-in: 8:00 AM&#10;No smoking"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Safety Equipment (one per line)</label>
+            <textarea name="safety_equipment" rows="7" placeholder="Life jackets&#10;First aid kit"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Cancellation Policy (one per line)</label>
+            <textarea name="cancellation_policy" rows="7" placeholder="48h free cancel&#10;Weather dependent"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Map Embed URL</label>
+              <textarea name="map_embed_url" rows="2" placeholder="Paste Google map embed URL"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Map Location Description</label>
+              <textarea name="map_location_description" rows="2" placeholder="Short location details"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Activity Highlights</h4>
+          <div class="highlights-container" id="addHighlightsSection">
+            <div class="highlight-item"  data-temp-id="TEMPLATE">
+              <input type="hidden" name="highlight_id" value="TEMPLATE">
+              <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="highlight_title" placeholder="e.g., 8 hours adventure" />
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea name="highlight_description" rows="2" placeholder="Highlight description"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Image</label>
+                <input type="file" name="highlight_image_TEMPLATE" accept="image/*" />
+              </div>
+              <button type="button" class="remove-highlight-btn" style="display:none;">Remove</button>
+            </div>
+          </div>
+          <button type="button" class="add-highlight-btn" id="addHighlightBtn">+ Add Another Highlight</button>
+        </div>
+
+        <div class="form-section">
+          <h4>Activity Photos</h4>
+          <div class="form-group">
+            <div id="imageDropzone" class="image-dropzone">
+              <p>Drag &amp; drop images here, or <span class="browse-link">browse</span></p>
+              <p class="help">Accepted: JPG, PNG, WEBP (max 10 images).</p>
+              <input type="file" id="imagesInput" name="images" accept="image/*" multiple class="visually-hidden" />
+            </div>
+            <div id="imagePreviewGrid" class="image-preview-grid"></div>
+          </div>
+        </div>
+
+        <div class="form-actions sticky-footer">
+          <button type="button" class="cancel-btn">Cancel</button>
+          <button type="submit" class="create-btn">Create Activity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Activity Modal -->
+<div id="editActivityModal" class="modal">
+  <div class="modal-content scrollable">
+    <div class="modal-header">
+      <h3>Edit Activity</h3>
+      <button type="button" class="close-modal" aria-label="Close">&times;</button>
+    </div>
+    <p>Update the details for this activity.</p>
+
+    <div class="modal-body">
+      <form class="activity-form"
+            id="editActivityForm"
+            method="post"
+            enctype="multipart/form-data"
+            action="{% url 'add_activity' %}">
+        {% csrf_token %}
+        <input type="hidden" name="activity_id" id="editActivityId" value="" />
+        <div id="deleteHighlightIdsContainer" style="display:none;"></div>
+
+        <div class="form-section">
+          <h4>Basic Information</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Activity Name *</label>
+              <input type="text" name="name" id="editName" required />
+            </div>
+
+            <div class="form-group">
+              <label>Activity Type</label>
+              <select name="activity_type" id="editActivityType">
+                <option value="Scuba diving">Scuba diving</option>
+                <option value="Catamaran">Catamaran</option>
+                <option value="Speed boat">Speed boat</option>
+                <option value="Water ski">Water ski</option>
+                <option value="Dolphin watching">Dolphin watching</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Location</label>
+              <input type="text" name="location" id="editLocation" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Description *</label>
+            <textarea name="description" id="editDescription" rows="4" required></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Price (Rs) *</label>
+              <input type="number" name="price" id="editPrice" min="0" step="1" required />
+            </div>
+
+            <div class="form-group">
+              <label>Duration</label>
+              <input type="text" name="duration" id="editDuration" />
+            </div>
+
+            <div class="form-group">
+              <label>Max Participants</label>
+              <input type="number" name="max_participants" id="editMaxParticipants" min="1" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Activity Details</h4>
+          <div class="form-group">
+            <label>Activity Rules</label>
+            <textarea name="activity_rules" id="editRules" rows="7"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Safety Equipment</label>
+            <textarea name="safety_equipment" id="editSafety" rows="7"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Cancellation Policy</label>
+            <textarea name="cancellation_policy" id="editCancel" rows="7"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Map Embed URL</label>
+              <textarea name="map_embed_url" id="editMapUrl" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Map Location Description</label>
+              <textarea name="map_location_description" id="editMapDesc" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4>Activity Highlights</h4>
+          <div class="highlights-container" id="editHighlightsSection">
+            <!-- Highlights will be dynamically populated here -->
+          </div>
+          <button type="button" class="add-highlight-btn" id="editAddHighlightBtn">+ Add Another Highlight</button>
+        </div>
+
+        <div class="form-section">
+          <h4>Edit Activity Photos</h4>
+          <div class="form-group">
+            <div id="editImageDropzone" class="image-dropzone">
+              <p>Drag &amp; drop images here, or <span class="browse-link">browse</span></p>
+              <p class="help">Accepted: JPG, PNG, WEBP (max 10 images).</p>
+              <input type="file" id="editImagesInput" name="images" accept="image/*" multiple class="visually-hidden" />
+            </div>
+            <div id="editImagePreviewGrid" class="image-preview-grid"></div>
+          </div>
+        </div>
+
+        <div class="form-actions sticky-footer">
+          <button type="button" class="cancel-btn">Cancel</button>
+          <button type="submit" class="create-btn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if messages %}
+  <ul class="flash-messages">
+    {% for message in messages %}
+      <li class="flash-message {{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/admin_activity.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,182 @@
+{% extends "base_homepage.html" %}
+{% load static %}
+
+{% block title %}Browse Activities - Grand Blue{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/activities_browse.css' %}" />
+{% endblock %}
+
+{% block content %}
+<h1>Browse Activities</h1>
+
+<!-- Container for Search + Filter -->
+<div class="filter-search-container">
+  <!-- Filter Buttons first -->
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-group="all" onclick="filterActivities('all', event)">
+      All
+    </button>
+    {% for group_name in activities_by_type.keys %}
+    <button class="filter-btn" data-group="{{ group_name|slugify }}"
+      onclick="filterActivities('{{ group_name|slugify }}', event)">
+      {{ group_name }}
+    </button>
+    {% endfor %}
+  </div>
+
+  <!-- Search Bar on the right -->
+  <div class="search-bar">
+    <input type="text" id="activitySearch" placeholder="Search activities..." onkeyup="searchActivities()" />
+    <span class="search-icon">
+      <img src="{% static 'images/search-icon.png' %}" alt="Search" width="18" height="18">
+    </span>
+    </span>
+  </div>
+</div>
+
+<!-- Activities Section -->
+{% for group_name, group_activities in activities_by_type.items %}
+<div class="activity-group" data-group="{{ group_name|slugify }}" id="{{ group_name|slugify }}">
+  <h2 class="section-title">{{ group_name }}</h2>
+  <hr class="divider" />
+
+  <div class="grid">
+    {% for activity in group_activities %}
+    <div class="card" data-name="{{ activity.name|lower }}">
+      <div class="card-image">
+        <img src="{{ activity.image }}" alt="{{ activity.name }}" />
+      </div>
+
+      <div class="card-overlay">
+        <span class="activity-title">{{ activity.name }}</span>
+      </div>
+
+      <div class="card-footer">
+        {% url 'activity_detail' activity.name|slugify as activity_url %}
+        <button class="book-btn1" onclick="window.location.href='{{ activity_url }}'">
+          Book
+        </button>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block js %}
+<script>
+  function filterActivities(category, event) {
+    category = (category || "all").toLowerCase();
+    const groups = document.querySelectorAll(".activity-group");
+
+    // Show/hide activity groups
+    groups.forEach((group) => {
+      const groupName = (group.dataset.group || "").toLowerCase();
+      group.style.display =
+        category === "all" || groupName === category ? "block" : "none";
+    });
+
+    // Update active button
+    const buttons = document.querySelectorAll(".filter-btn");
+    buttons.forEach((btn) => btn.classList.remove("active"));
+
+    if (event && event.currentTarget) {
+      // Called via click
+      event.currentTarget.classList.add("active");
+    } else {
+      // Called programmatically (from URL param)
+      buttons.forEach((btn) => {
+        const btnGroup = (btn.dataset.group || "").toLowerCase();
+        if (
+          (category === "all" && btnGroup === "all") ||
+          btnGroup === category
+        ) {
+          btn.classList.add("active");
+        }
+      });
+    }
+
+    // Reset search input
+    const searchInput = document.getElementById("activitySearch");
+    if (searchInput) searchInput.value = "";
+  }
+
+  function searchActivities() {
+    const input = document
+      .getElementById("activitySearch")
+      .value.toLowerCase();
+    const groups = document.querySelectorAll(".activity-group");
+
+    groups.forEach((group) => {
+      const cards = group.querySelectorAll(".card");
+      let anyVisible = false;
+
+      cards.forEach((card) => {
+        const name = (card.getAttribute("data-name") || "").toLowerCase();
+        if (name.includes(input)) {
+          card.style.display = "block";
+          anyVisible = true;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      group.style.display = anyVisible ? "block" : "none";
+    });
+  }
+  /**
+    // Read ?category=... from the URL and apply the correct filter
+    function applyFilterFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const category = params.get("category");
+  
+      if (!category) {
+        // default: show all
+        filterActivities("all");
+        return;
+      }
+  
+      filterActivities(category);
+  
+      // Optionally scroll to that group
+      const targetGroup = document.querySelector(
+        '.activity-group[data-group="' + category.toLowerCase() + '"]'
+      );
+      if (targetGroup) {
+        targetGroup.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  
+    document.addEventListener("DOMContentLoaded", applyFilterFromQuery);
+    
+    above code is commented to avoid conflict with the smooth scroll on page load below
+    **/
+
+  // Handle smooth scroll to anchor on page load
+  window.addEventListener('DOMContentLoaded', function () {
+    // Check if there's a hash in the URL
+    if (window.location.hash) {
+      const hash = window.location.hash;
+      const targetElement = document.querySelector(hash);
+
+      if (targetElement) {
+        // Wait a bit for the page to fully render
+        setTimeout(() => {
+          // Calculate the position to center the element
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - (window.innerHeight / 2) + (targetElement.offsetHeight / 2);
+
+          // Smooth scroll to the calculated position
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    }
+  });
+</script>
+{% endblock %}
